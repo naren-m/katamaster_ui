@@ -5,6 +5,7 @@ import { useRewards } from '../../contexts/RewardsContext';
 import PunchCounter from './PunchCounter';
 import KickCounter from './KickCounter';
 import KataLogger from './KataLogger';
+import TechniqueLogger from './TechniqueLogger';
 import SessionTimer from './SessionTimer';
 import MotivationalMessage from './MotivationalMessage';
 import Confetti from 'react-confetti';
@@ -27,6 +28,7 @@ const PracticeCard = () => {
   const [pointsEarned, setPointsEarned] = useState(0);
   const [showCompleted, setShowCompleted] = useState(false);
   const [motivationalMessage, setMotivationalMessage] = useState('');
+  const [activeTab, setActiveTab] = useState<'basic' | 'advanced'>('basic');
   
   const handleStartPractice = () => {
     startSession();
@@ -135,20 +137,51 @@ const PracticeCard = () => {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2 text-blue-800">Punch & Kick Counter</h3>
-              <div className="space-y-4">
-                <PunchCounter />
-                <KickCounter />
+          {/* Practice Mode Tabs */}
+          <div className="flex space-x-2 mb-6">
+            <button
+              onClick={() => setActiveTab('basic')}
+              className={`flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-colors ${
+                activeTab === 'basic'
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Basic Mode
+            </button>
+            <button
+              onClick={() => setActiveTab('advanced')}
+              className={`flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-colors ${
+                activeTab === 'advanced'
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Advanced Mode
+            </button>
+          </div>
+
+          {activeTab === 'basic' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-2 text-blue-800">Punch & Kick Counter</h3>
+                <div className="space-y-4">
+                  <PunchCounter />
+                  <KickCounter />
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold mb-2 text-blue-800">Kata Practice</h3>
+                <KataLogger />
               </div>
             </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-2 text-blue-800">Kata Practice</h3>
-              <KataLogger />
+          ) : (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-2 text-blue-800">Technique Practice</h3>
+              <TechniqueLogger />
             </div>
-          </div>
+          )}
           
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2 text-blue-800">Practice Timer</h3>

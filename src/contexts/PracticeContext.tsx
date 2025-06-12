@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { sampleData } from '../data/sampleData';
+import { TechniqueLog, TECHNIQUES } from '../types/techniques';
 
 type Kata = {
   name: string;
@@ -14,6 +15,7 @@ type Session = {
   duration: number;
   katas: string[];
   pointsEarned: number;
+  techniques: TechniqueLog[];
 };
 
 type PracticeContextType = {
@@ -37,6 +39,8 @@ type PracticeContextType = {
   startSession: () => void;
   endSession: () => number;
   resetCurrentSession: () => void;
+  incrementTechnique: (techniqueId: string) => void;
+  getTechniqueCount: (techniqueId: string) => number;
 };
 
 const PracticeContext = createContext<PracticeContextType | undefined>(undefined);
@@ -48,6 +52,7 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
   const [sessionTimer, setSessionTimer] = useState(0);
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [timerInterval, setTimerInterval] = useState<number | null>(null);
+  const [currentTechniques, setCurrentTechniques] = useState<TechniqueLog[]>([]);
   
   const [totalPoints, setTotalPoints] = useState(sampleData.child.totalPoints);
   const [currentStreak, setCurrentStreak] = useState(sampleData.child.currentStreak);
@@ -70,6 +75,24 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
 
   const incrementKicks = () => {
     setCurrentKicks(prev => prev + 1);
+  };
+
+  const incrementTechnique = (techniqueId: string) => {
+    setCurrentTechniques(prev => {
+      const existing = prev.find(t => t.techniqueId === techniqueId);
+      if (existing) {
+        return prev.map(t => 
+          t.techniqueId === techniqueId 
+            ? { ...t, count: t.count + 1 }
+            : t
+        );
+      }
+      return [...prev, { techniqueId, count: 1, timestamp: new Date() }];
+    });
+  };
+
+  const getTechniqueCount = (techniqueId: string): number => {
+    return currentTechniques.find(t => t.techniqueId === techniqueId)?.count || 0;
   };
 
   const addKata = (kataName: string, repetitions: number) => {
@@ -111,11 +134,16 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
     if (timerInterval) clearInterval(timerInterval);
     setIsSessionActive(false);
     
-    // Calculate points earned (1 point per 10 punches/kicks + 5 points per kata repetition)
+    // Calculate points earned
     const punchPoints = Math.floor(currentPunches / 10);
     const kickPoints = Math.floor(currentKicks / 10);
     const kataPoints = currentKatas.reduce((sum, kata) => sum + (kata.repetitions * 5), 0);
-    const pointsEarned = 10 + punchPoints + kickPoints + kataPoints;
+    const techniquePoints = currentTechniques.reduce((sum, technique) => {
+      const techDef = TECHNIQUES.find(t => t.id === technique.techniqueId);
+      return sum + (techDef ? techDef.points * technique.count : 0);
+    }, 0);
+    
+    const pointsEarned = 10 + punchPoints + kickPoints + kataPoints + techniquePoints;
     
     // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split('T')[0];
@@ -128,7 +156,8 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
       kicks: currentKicks,
       duration: sessionTimer,
       katas: currentKatas.map(k => `${k.name} x${k.repetitions}`),
-      pointsEarned
+      pointsEarned,
+      techniques: currentTechniques
     };
     
     // Update state
@@ -149,6 +178,7 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
     setCurrentPunches(0);
     setCurrentKicks(0);
     setCurrentKatas([]);
+    setCurrentTechniques([]);
     setSessionTimer(0);
     setIsSessionActive(false);
     if (timerInterval) clearInterval(timerInterval);
@@ -176,7 +206,9 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
       addKata,
       startSession,
       endSession,
-      resetCurrentSession
+      resetCurrentSession,
+      incrementTechnique,
+      getTechniqueCount
     }}>
       {children}
     </PracticeContext.Provider>
