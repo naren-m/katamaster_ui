@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { 
   Home, 
   Award, 
   Calendar, 
   Settings, 
   User, 
-  UserCog
+  UserCog,
+  CalendarDays,
+  LogOut,
+  BookOpen
 } from 'lucide-react';
 
 type NavLinkProps = {
@@ -33,18 +37,22 @@ const NavLink = ({ to, icon, label, active }: NavLinkProps) => (
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { isParentMode, toggleUserMode } = useUser();
+  const { user, signOut } = useAuth();
   const location = useLocation();
   
   const kidNavLinks = [
     { to: '/', icon: <Home size={24} />, label: 'Home' },
+    { to: '/kata-reference', icon: <BookOpen size={24} />, label: 'Kata' },
     { to: '/rewards', icon: <Award size={24} />, label: 'Rewards' },
     { to: '/history', icon: <Calendar size={24} />, label: 'History' }
   ];
   
   const parentNavLinks = [
     { to: '/parent', icon: <Home size={24} />, label: 'Dashboard' },
+    { to: '/kata-reference', icon: <BookOpen size={24} />, label: 'Kata' },
     { to: '/rewards', icon: <Award size={24} />, label: 'Rewards' },
     { to: '/history', icon: <Calendar size={24} />, label: 'History' },
+    { to: '/calendar', icon: <CalendarDays size={24} />, label: 'Calendar' },
     { to: '/settings', icon: <Settings size={24} />, label: 'Settings' }
   ];
   
@@ -59,13 +67,23 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             {isParentMode ? 'Parent Dashboard' : 'Karate Kid Practice'}
           </span>
         </div>
-        <button
-          onClick={toggleUserMode}
-          className="p-2 bg-orange-500 rounded-full text-white hover:bg-orange-600 transition-all"
-          aria-label={isParentMode ? "Switch to Kid Mode" : "Switch to Parent Mode"}
-        >
-          {isParentMode ? <User size={20} /> : <UserCog size={20} />}
-        </button>
+        <div className="flex items-center space-x-2">
+          <span className="text-sm">Welcome, {user?.name}!</span>
+          <button
+            onClick={toggleUserMode}
+            className="p-2 bg-orange-500 rounded-full text-white hover:bg-orange-600 transition-all"
+            aria-label={isParentMode ? "Switch to Kid Mode" : "Switch to Parent Mode"}
+          >
+            {isParentMode ? <User size={20} /> : <UserCog size={20} />}
+          </button>
+          <button
+            onClick={() => signOut()}
+            className="p-2 bg-red-500 rounded-full text-white hover:bg-red-600 transition-all"
+            aria-label="Sign Out"
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
       </header>
       
       {/* Main Content */}

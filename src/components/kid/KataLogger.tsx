@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { usePractice } from '../../contexts/PracticeContext';
 
 const KataLogger = () => {
-  const { currentKatas, addKata, kataList } = usePractice();
+  const { currentKatas, addKata, kataList, kataObjects } = usePractice();
+  const navigate = useNavigate();
   const [selectedKata, setSelectedKata] = useState(kataList[0]);
   const [repetitions, setRepetitions] = useState(1);
 
@@ -19,6 +21,13 @@ const KataLogger = () => {
 
   const decrementReps = () => {
     setRepetitions(prev => (prev > 1 ? prev - 1 : 1));
+  };
+
+  const handleViewKataDetails = () => {
+    const selectedKataObject = kataObjects.find(kata => kata.name === selectedKata);
+    if (selectedKataObject) {
+      navigate(`/kata/${selectedKataObject.id}`);
+    }
   };
 
   return (
@@ -61,14 +70,34 @@ const KataLogger = () => {
         </motion.button>
       </div>
 
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="bg-blue-600 text-white py-3 px-4 rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-md"
-        onClick={handleAddKata}
-      >
-        Add Kata
-      </motion.button>
+      <div className="space-y-2">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-md"
+          onClick={handleAddKata}
+        >
+          Add Kata
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-full bg-green-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors shadow-md"
+          onClick={handleViewKataDetails}
+        >
+          📖 View Steps & Details
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-purple-700 transition-colors shadow-md"
+          onClick={() => navigate('/kata-reference')}
+        >
+          📚 Browse All Kata
+        </motion.button>
+      </div>
 
       {currentKatas.length > 0 && (
         <div className="mt-4">
