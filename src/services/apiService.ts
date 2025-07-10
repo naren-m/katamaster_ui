@@ -1,6 +1,7 @@
 // Simple API service to communicate with backend
 export class ApiService {
-  private baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:8082' : `http://${window.location.hostname}:8082`;
+  private baseUrl = import.meta.env.VITE_API_BASE_URL || 
+    (window.location.hostname === 'localhost' ? 'http://localhost:8082' : `http://${window.location.hostname}:8082`);
 
   async recordPracticeSession(sessionData: {
     kataId: string;

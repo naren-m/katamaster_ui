@@ -8,6 +8,7 @@ import KataLogger from './KataLogger';
 import TechniqueLogger from './TechniqueLogger';
 import SessionTimer from './SessionTimer';
 import MotivationalMessage from './MotivationalMessage';
+import MovementCombinations from './MovementCombinations';
 import Confetti from 'react-confetti';
 import { sampleData } from '../../data/sampleData';
 
@@ -28,7 +29,7 @@ const PracticeCard = () => {
   const [pointsEarned, setPointsEarned] = useState(0);
   const [showCompleted, setShowCompleted] = useState(false);
   const [motivationalMessage, setMotivationalMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'basic' | 'advanced'>('basic');
+  const [activeTab, setActiveTab] = useState<'basic' | 'advanced' | 'movements'>('basic');
   
   const handleStartPractice = () => {
     startSession();
@@ -138,26 +139,36 @@ const PracticeCard = () => {
       ) : (
         <>
           {/* Practice Mode Tabs */}
-          <div className="flex space-x-2 mb-6">
+          <div className="flex space-x-1 mb-6">
             <button
               onClick={() => setActiveTab('basic')}
-              className={`flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-colors ${
+              className={`flex-1 py-2 px-2 rounded-lg font-bold text-xs transition-colors ${
                 activeTab === 'basic'
                   ? 'bg-orange-500 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Basic Mode
+              Basic
             </button>
             <button
               onClick={() => setActiveTab('advanced')}
-              className={`flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-colors ${
+              className={`flex-1 py-2 px-2 rounded-lg font-bold text-xs transition-colors ${
                 activeTab === 'advanced'
                   ? 'bg-orange-500 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Advanced Mode
+              Advanced
+            </button>
+            <button
+              onClick={() => setActiveTab('movements')}
+              className={`flex-1 py-2 px-2 rounded-lg font-bold text-xs transition-colors ${
+                activeTab === 'movements'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Movements
             </button>
           </div>
 
@@ -176,10 +187,15 @@ const PracticeCard = () => {
                 <KataLogger />
               </div>
             </div>
-          ) : (
+          ) : activeTab === 'advanced' ? (
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-2 text-blue-800">Technique Practice</h3>
               <TechniqueLogger />
+            </div>
+          ) : (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-2 text-blue-800">Movement Combinations</h3>
+              <MovementCombinations />
             </div>
           )}
           

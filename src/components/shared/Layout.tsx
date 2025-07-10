@@ -11,7 +11,8 @@ import {
   UserCog,
   CalendarDays,
   LogOut,
-  BookOpen
+  BookOpen,
+  Activity
 } from 'lucide-react';
 
 type NavLinkProps = {
@@ -43,6 +44,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const kidNavLinks = [
     { to: '/', icon: <Home size={24} />, label: 'Home' },
     { to: '/kata-reference', icon: <BookOpen size={24} />, label: 'Kata' },
+    { to: '/movement-tracker', icon: <Activity size={24} />, label: 'Moves' },
     { to: '/rewards', icon: <Award size={24} />, label: 'Rewards' },
     { to: '/history', icon: <Calendar size={24} />, label: 'History' }
   ];
@@ -50,6 +52,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const parentNavLinks = [
     { to: '/parent', icon: <Home size={24} />, label: 'Dashboard' },
     { to: '/kata-reference', icon: <BookOpen size={24} />, label: 'Kata' },
+    { to: '/movement-tracker', icon: <Activity size={24} />, label: 'Moves' },
     { to: '/rewards', icon: <Award size={24} />, label: 'Rewards' },
     { to: '/history', icon: <Calendar size={24} />, label: 'History' },
     { to: '/calendar', icon: <CalendarDays size={24} />, label: 'Calendar' },
