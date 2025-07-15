@@ -1,7 +1,11 @@
 // Simple API service to communicate with backend
 export class ApiService {
   private baseUrl = import.meta.env.VITE_API_BASE_URL || 
-    (window.location.hostname === 'localhost' ? 'http://localhost:8082' : `http://${window.location.hostname}:8082`);
+    (() => {
+      // If accessing via IP or hostname, use the same host for API
+      const hostname = window.location.hostname;
+      return `http://${hostname}:8082`;
+    })();
 
   async recordPracticeSession(sessionData: {
     kataId: string;
@@ -293,6 +297,163 @@ export class ApiService {
       return await response.json();
     } catch (error) {
       console.error('Failed to sign out:', error);
+      throw error;
+    }
+  }
+
+  // Movement Service methods
+  async getAvailableMoves(moveType?: string) {
+    try {
+      let url = `${this.baseUrl}/api/movement/moves`;
+      if (moveType) {
+        url += `?type=${moveType}`;
+      }
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to fetch available moves:', error);
+      throw error;
+    }
+  }
+
+  async addCombination(combination: {
+    user_id: string;
+    name: string;
+    moves: Array<{
+      type: string;
+      name: string;
+      description: string;
+      duration_seconds: number;
+    }>;
+    repeat_count: number;
+  }) {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/movement/combinations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(combination),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to add combination:', error);
+      throw error;
+    }
+  }
+
+  async getCombinations(userId: string) {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/movement/combinations?user_id=${userId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to fetch combinations:', error);
+      throw error;
+    }
+  }
+
+  async createMovementSession(sessionData: {
+    user_id: string;
+    combination_ids: string[];
+    notes?: string;
+  }) {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/movement/sessions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sessionData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to create movement session:', error);
+      throw error;
+    }
+  }
+
+  async endMovementSession(sessionId: string, notes: string) {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/movement/sessions/${sessionId}/end`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ notes }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to end movement session:', error);
+      throw error;
+    }
+  }
+
+  async getMovementSessions(userId: string) {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/movement/sessions?user_id=${userId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to fetch movement sessions:', error);
+      throw error;
+    }
+  }
+
+  async getMoveCounters(userId: string) {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/movement/counters?user_id=${userId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to fetch move counters:', error);
+      throw error;
+    }
+  }
+
+  async updateMoveCounter(counterData: {
+    user_id: string;
+    move_name: string;
+    is_forward: boolean;
+    increment: number;
+  }) {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/movement/counters`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(counterData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to update move counter:', error);
       throw error;
     }
   }

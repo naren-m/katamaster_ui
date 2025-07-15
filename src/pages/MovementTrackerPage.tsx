@@ -47,7 +47,8 @@ const MovementTrackerPage: React.FC = () => {
     addCombination,
     startMovementSession,
     endMovementSession,
-    getDisplayName 
+    getDisplayName,
+    practiceProgress 
   } = useMovement();
   const [activeTab, setActiveTab] = useState<'builder' | 'practice' | 'stats'>('builder');
   
@@ -129,7 +130,7 @@ const MovementTrackerPage: React.FC = () => {
     setCurrentSequence(currentSequence.filter((_, i) => i !== index));
   };
 
-  const saveCombination = () => {
+  const saveCombination = async () => {
     if (!combinationName || currentSequence.length === 0) return;
 
     const combination: Combination = {
@@ -140,85 +141,40 @@ const MovementTrackerPage: React.FC = () => {
       created_at: new Date().toISOString()
     };
 
-    setSavedCombinations([...savedCombinations, combination]);
+    // Use the addCombination method from MovementContext
+    await addCombination(combination);
     setCurrentSequence([]);
     setCombinationName('');
     setRepeatCount(1);
   };
 
   // Practice Session functions
-  const startSession = () => {
+  const startSession = async () => {
     if (selectedCombinations.length === 0) return;
 
-    const session: Session = {
-      session_id: generateId(),
-      combination_ids: selectedCombinations,
-      start_time: new Date().toISOString(),
-      notes: '',
-      total_moves: 0
-    };
-
-    // Build session moves
-    const moves: Move[] = [];
-    selectedCombinations.forEach(combId => {
-      const combination = savedCombinations.find(c => c.combination_id === combId);
-      if (combination) {
-        for (let repeat = 0; repeat < combination.repeat_count; repeat++) {
-          moves.push(...combination.moves);
-        }
-      }
-    });
-
-    setCurrentSession(session);
-    setSessionMoves(moves);
-    setCurrentMoveIndex(0);
+    try {
+      await startMovementSession(selectedCombinations);
+    } catch (error) {
+      console.error('Failed to start session:', error);
+    }
   };
 
-  const endSession = () => {
-    if (!currentSession) return;
+  const endSession = async () => {
+    if (!activeSession) return;
 
-    const updatedSession: Session = {
-      ...currentSession,
-      end_time: new Date().toISOString(),
-      notes: sessionNotes,
-      total_moves: sessionMoves.length
-    };
-
-    // Update move counters (simplified for demo)
-    const newCounters = [...moveCounters];
-    sessionMoves.forEach(move => {
-      if (move.type === 'direction' && (move.name.includes('forward') || move.name.includes('backward'))) {
-        const existingCounter = newCounters.find(c => c.move_name === move.name);
-        if (existingCounter) {
-          if (move.name.includes('forward')) {
-            existingCounter.forward_count++;
-          } else {
-            existingCounter.backward_count++;
-          }
-          existingCounter.total_count = existingCounter.forward_count + existingCounter.backward_count;
-          existingCounter.last_updated = new Date().toISOString();
-        } else {
-          newCounters.push({
-            move_name: move.name,
-            forward_count: move.name.includes('forward') ? 1 : 0,
-            backward_count: move.name.includes('backward') ? 1 : 0,
-            total_count: 1,
-            last_updated: new Date().toISOString()
-          });
-        }
-      }
-    });
-
-    setMoveCounters(newCounters);
-    setCurrentSession(null);
-    setSessionMoves([]);
-    setCurrentMoveIndex(0);
-    setSessionNotes('');
-    setSelectedCombinations([]);
+    try {
+      await endMovementSession(activeSession.session_id, sessionNotes);
+      setSessionNotes('');
+      setSelectedCombinations([]);
+    } catch (error) {
+      console.error('Failed to end session:', error);
+    }
   };
 
   const nextMove = () => {
-    if (currentMoveIndex < sessionMoves.length - 1) {
+    if (practiceProgress.currentMoveIndex < currentSessionMoves.length - 1) {
+      // In a full implementation, this would update the context
+      // For now, we'll use local state for navigation
       setCurrentMoveIndex(currentMoveIndex + 1);
     }
   };
@@ -397,7 +353,7 @@ const MovementTrackerPage: React.FC = () => {
               </div>
 
               <button
-                onClick={saveCombination}
+                onClick={() => saveCombination()}
                 disabled={!combinationName || currentSequence.length === 0}
                 className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
               >
@@ -475,7 +431,13 @@ const MovementTrackerPage: React.FC = () => {
                   </div>
 
                   <button
-                    onClick={startSession}
+                    onClick={() => {
+                      try {
+                        startSession();
+                      } catch (error) {
+                        console.error('Error starting session:', error);
+                      }
+                    }}
                     disabled={selectedCombinations.length === 0}
                     className="w-full bg-green-600 text-white py-4 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg"
                   >
@@ -496,7 +458,13 @@ const MovementTrackerPage: React.FC = () => {
                   </div>
 
                   <button
-                    onClick={endSession}
+                    onClick={async () => {
+                      try {
+                        await endSession();
+                      } catch (error) {
+                        console.error('Error ending session:', error);
+                      }
+                    }}
                     className="w-full bg-red-600 text-white py-4 rounded-lg font-semibold hover:bg-red-700 transition-colors text-lg"
                   >
                     End Session

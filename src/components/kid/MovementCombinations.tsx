@@ -21,19 +21,27 @@ const MovementCombinations: React.FC = () => {
 
   const sessionData = getSessionData();
 
-  const handleStartSession = () => {
+  const handleStartSession = async () => {
     if (selectedCombinations.length > 0) {
-      const session = startMovementSession(selectedCombinations);
-      setCurrentMoveIndex(0);
+      try {
+        await startMovementSession(selectedCombinations);
+        setCurrentMoveIndex(0);
+      } catch (error) {
+        console.error('Failed to start session:', error);
+      }
     }
   };
 
-  const handleEndSession = () => {
+  const handleEndSession = async () => {
     if (activeSession) {
-      endMovementSession(activeSession.session_id, sessionNotes);
-      setSelectedCombinations([]);
-      setCurrentMoveIndex(0);
-      setSessionNotes('');
+      try {
+        await endMovementSession(activeSession.session_id, sessionNotes);
+        setSelectedCombinations([]);
+        setCurrentMoveIndex(0);
+        setSessionNotes('');
+      } catch (error) {
+        console.error('Failed to end session:', error);
+      }
     }
   };
 

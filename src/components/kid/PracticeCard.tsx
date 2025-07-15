@@ -35,24 +35,31 @@ const PracticeCard = () => {
     startSession();
   };
   
-  const handleFinishPractice = () => {
-    const points = endSession();
-    setPointsEarned(points);
-    updateRewardProgress(points);
-    
-    // Show congratulatory UI
-    setShowConfetti(true);
-    setShowCompleted(true);
-    
-    // Get random motivational message
-    const messages = sampleData.motivationalMessages;
-    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    setMotivationalMessage(randomMessage);
-    
-    // Hide confetti after 5 seconds
-    setTimeout(() => {
-      setShowConfetti(false);
-    }, 5000);
+  const handleFinishPractice = async () => {
+    try {
+      const points = await endSession();
+      setPointsEarned(points);
+      updateRewardProgress(points);
+      
+      // Show congratulatory UI
+      setShowConfetti(true);
+      setShowCompleted(true);
+      
+      // Get random motivational message
+      const messages = sampleData.motivationalMessages;
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      setMotivationalMessage(randomMessage);
+      
+      // Hide confetti after 5 seconds
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 5000);
+    } catch (error) {
+      console.error('Error finishing practice session:', error);
+      // Still show completion UI even if backend fails
+      setPointsEarned(0);
+      setShowCompleted(true);
+    }
   };
   
   const handleResetView = () => {

@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { apiService } from '../services/apiService';
+import { useUser } from './UserContext';
 
 // Types for movement tracking
 interface Move {
@@ -39,12 +41,14 @@ interface MovementContextType {
   savedCombinations: Combination[];
   moveCounters: MoveCounter[];
   activeSession: Session | null;
+  loading: boolean;
+  error: string | null;
   
   // Actions
-  addCombination: (combination: Combination) => void;
+  addCombination: (combination: Combination) => Promise<void>;
   updateMoveCounter: (moveName: string, isForward: boolean, increment: number) => void;
-  startMovementSession: (combinationIds: string[]) => Session;
-  endMovementSession: (sessionId: string, notes: string) => void;
+  startMovementSession: (combinationIds: string[]) => Promise<Session>;
+  endMovementSession: (sessionId: string, notes: string) => Promise<void>;
   
   // Current session data for practice integration
   currentSessionMoves: Move[];
@@ -63,6 +67,7 @@ interface MovementContextType {
   
   // Utility
   getDisplayName: (type: string, name: string) => string;
+  loadUserData: () => Promise<void>;
 }
 
 const MovementContext = createContext<MovementContextType | undefined>(undefined);
@@ -101,6 +106,7 @@ const availableMoves = {
 };
 
 export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useUser();
   const [savedCombinations, setSavedCombinations] = useState<Combination[]>([]);
   const [moveCounters, setMoveCounters] = useState<MoveCounter[]>([]);
   const [activeSession, setActiveSession] = useState<Session | null>(null);
@@ -110,37 +116,70 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     totalMoves: 0,
     completedMoves: 0
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load sample data on mount
+  // Load data from API on mount and when user changes
   useEffect(() => {
-    // Load sample combinations for demo
-    const sampleCombinations: Combination[] = [
-      {
-        combination_id: 'sample-1',
-        name: 'Basic Forward Sequence',
-        moves: [
-          { type: 'stance', name: 'forward_stance', description: 'Zenkutsu-dachi', duration_seconds: 3 },
-          { type: 'direction', name: 'move_forward', description: 'Step forward', duration_seconds: 2 },
-          { type: 'technique', name: 'punch', description: 'Oi-zuki', duration_seconds: 1 }
-        ],
-        repeat_count: 3,
-        created_at: new Date().toISOString()
-      },
-      {
-        combination_id: 'sample-2',
-        name: 'Defense Combination',
-        moves: [
-          { type: 'stance', name: 'back_stance', description: 'Kokutsu-dachi', duration_seconds: 3 },
-          { type: 'technique', name: 'down_block', description: 'Gedan-barai', duration_seconds: 2 },
-          { type: 'direction', name: 'move_backward', description: 'Step back', duration_seconds: 2 }
-        ],
-        repeat_count: 2,
-        created_at: new Date().toISOString()
-      }
-    ];
+    if (user?.id) {
+      loadUserData();
+    }
+  }, [user?.id]);
 
-    setSavedCombinations(sampleCombinations);
-  }, []);
+  const loadUserData = async () => {
+    if (!user?.id) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Load combinations and move counters in parallel
+      const [combinationsResponse, countersResponse] = await Promise.all([
+        apiService.getCombinations(user.id),
+        apiService.getMoveCounters(user.id)
+      ]);
+
+      if (combinationsResponse.success) {
+        setSavedCombinations(combinationsResponse.combinations || []);
+      }
+
+      if (countersResponse.success) {
+        setMoveCounters(countersResponse.counters || []);
+      }
+    } catch (err) {
+      console.error('Failed to load movement data:', err);
+      setError('Failed to load movement data');
+      
+      // Load sample data as fallback
+      const sampleCombinations: Combination[] = [
+        {
+          combination_id: 'sample-1',
+          name: 'Basic Forward Sequence',
+          moves: [
+            { type: 'stance', name: 'forward_stance', description: 'Zenkutsu-dachi', duration_seconds: 3 },
+            { type: 'direction', name: 'move_forward', description: 'Step forward', duration_seconds: 2 },
+            { type: 'technique', name: 'punch', description: 'Oi-zuki', duration_seconds: 1 }
+          ],
+          repeat_count: 3,
+          created_at: new Date().toISOString()
+        },
+        {
+          combination_id: 'sample-2',
+          name: 'Defense Combination',
+          moves: [
+            { type: 'stance', name: 'back_stance', description: 'Kokutsu-dachi', duration_seconds: 3 },
+            { type: 'technique', name: 'down_block', description: 'Gedan-barai', duration_seconds: 2 },
+            { type: 'direction', name: 'move_backward', description: 'Step back', duration_seconds: 2 }
+          ],
+          repeat_count: 2,
+          created_at: new Date().toISOString()
+        }
+      ];
+      setSavedCombinations(sampleCombinations);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const generateId = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -159,8 +198,35 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return name;
   };
 
-  const addCombination = (combination: Combination) => {
-    setSavedCombinations(prev => [...prev, combination]);
+  const addCombination = async (combination: Combination) => {
+    if (!user?.id) return;
+
+    try {
+      const response = await apiService.addCombination({
+        user_id: user.id,
+        name: combination.name,
+        moves: combination.moves.map(move => ({
+          type: move.type,
+          name: move.name,
+          description: move.description,
+          duration_seconds: move.duration_seconds
+        })),
+        repeat_count: combination.repeat_count
+      });
+
+      if (response.success) {
+        // Add the combination with the ID from the server
+        const newCombination = {
+          ...combination,
+          combination_id: response.combination_id
+        };
+        setSavedCombinations(prev => [...prev, newCombination]);
+      }
+    } catch (err) {
+      console.error('Failed to save combination:', err);
+      // Add locally as fallback
+      setSavedCombinations(prev => [...prev, combination]);
+    }
   };
 
   const updateMoveCounter = (moveName: string, isForward: boolean, increment: number) => {
@@ -193,45 +259,88 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     });
   };
 
-  const startMovementSession = (combinationIds: string[]): Session => {
-    const session: Session = {
-      session_id: generateId(),
-      combination_ids: combinationIds,
-      start_time: new Date().toISOString(),
-      notes: '',
-      total_moves: 0
-    };
+  const startMovementSession = async (combinationIds: string[]): Promise<Session> => {
+    if (!user?.id) {
+      throw new Error('User not logged in');
+    }
 
-    // Build session moves
-    const moves: Move[] = [];
-    combinationIds.forEach(combId => {
-      const combination = savedCombinations.find(c => c.combination_id === combId);
-      if (combination) {
-        for (let repeat = 0; repeat < combination.repeat_count; repeat++) {
-          moves.push(...combination.moves);
-        }
+    try {
+      const response = await apiService.createMovementSession({
+        user_id: user.id,
+        combination_ids: combinationIds,
+        notes: ''
+      });
+
+      if (response.success) {
+        const session: Session = {
+          session_id: response.session_id,
+          combination_ids: combinationIds,
+          start_time: new Date().toISOString(),
+          notes: '',
+          total_moves: 0
+        };
+
+        // Build session moves
+        const moves: Move[] = [];
+        combinationIds.forEach(combId => {
+          const combination = savedCombinations.find(c => c.combination_id === combId);
+          if (combination) {
+            for (let repeat = 0; repeat < combination.repeat_count; repeat++) {
+              moves.push(...combination.moves);
+            }
+          }
+        });
+
+        setActiveSession(session);
+        setCurrentSessionMoves(moves);
+        setPracticeProgress({
+          currentMoveIndex: 0,
+          totalMoves: moves.length,
+          completedMoves: 0
+        });
+
+        return session;
+      } else {
+        throw new Error('Failed to create session');
       }
-    });
+    } catch (err) {
+      console.error('Failed to start movement session:', err);
+      // Create local session as fallback
+      const session: Session = {
+        session_id: generateId(),
+        combination_ids: combinationIds,
+        start_time: new Date().toISOString(),
+        notes: '',
+        total_moves: 0
+      };
 
-    setActiveSession(session);
-    setCurrentSessionMoves(moves);
-    setPracticeProgress({
-      currentMoveIndex: 0,
-      totalMoves: moves.length,
-      completedMoves: 0
-    });
+      const moves: Move[] = [];
+      combinationIds.forEach(combId => {
+        const combination = savedCombinations.find(c => c.combination_id === combId);
+        if (combination) {
+          for (let repeat = 0; repeat < combination.repeat_count; repeat++) {
+            moves.push(...combination.moves);
+          }
+        }
+      });
 
-    return session;
+      setActiveSession(session);
+      setCurrentSessionMoves(moves);
+      setPracticeProgress({
+        currentMoveIndex: 0,
+        totalMoves: moves.length,
+        completedMoves: 0
+      });
+
+      return session;
+    }
   };
 
-  const endMovementSession = (sessionId: string, notes: string) => {
-    if (activeSession && activeSession.session_id === sessionId) {
-      const updatedSession: Session = {
-        ...activeSession,
-        end_time: new Date().toISOString(),
-        notes: notes,
-        total_moves: currentSessionMoves.length
-      };
+  const endMovementSession = async (sessionId: string, notes: string) => {
+    if (!activeSession || activeSession.session_id !== sessionId) return;
+
+    try {
+      await apiService.endMovementSession(sessionId, notes);
 
       // Update move counters for completed moves
       currentSessionMoves.forEach(move => {
@@ -240,6 +349,16 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         }
       });
 
+      setActiveSession(null);
+      setCurrentSessionMoves([]);
+      setPracticeProgress({
+        currentMoveIndex: 0,
+        totalMoves: 0,
+        completedMoves: 0
+      });
+    } catch (err) {
+      console.error('Failed to end movement session:', err);
+      // Still clear the local session even if API call fails
       setActiveSession(null);
       setCurrentSessionMoves([]);
       setPracticeProgress({
@@ -270,6 +389,8 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     savedCombinations,
     moveCounters,
     activeSession,
+    loading,
+    error,
     addCombination,
     updateMoveCounter,
     startMovementSession,
@@ -277,7 +398,8 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     currentSessionMoves,
     practiceProgress,
     getSessionData,
-    getDisplayName
+    getDisplayName,
+    loadUserData
   };
 
   return (
