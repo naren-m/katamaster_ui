@@ -352,7 +352,7 @@ export const DashboardAnalytics: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600">Avg Rating</p>
-                    <p className="text-2xl font-bold text-yellow-600">{analytics.stats.averageRating.toFixed(1)}</p>
+                    <p className="text-2xl font-bold text-yellow-600">{(analytics.stats.averageRating || 0).toFixed(1)}</p>
                   </div>
                   <span className="text-2xl">{getStatIcon('rating')}</span>
                 </div>
