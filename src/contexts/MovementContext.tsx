@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
-import { useUser } from './UserContext';
+import { useAuth } from './AuthContext';
 
 // Types for movement tracking
 interface Move {
@@ -106,7 +106,11 @@ const availableMoves = {
 };
 
 export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user } = useUser();
+  console.log('🚀 MovementProvider initializing...');
+  const { user } = useAuth();
+  
+  console.log('👤 MovementProvider user:', user?.id || 'No user');
+  
   const [savedCombinations, setSavedCombinations] = useState<Combination[]>([]);
   const [moveCounters, setMoveCounters] = useState<MoveCounter[]>([]);
   const [activeSession, setActiveSession] = useState<Session | null>(null);
@@ -121,36 +125,51 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Load data from API on mount and when user changes
   useEffect(() => {
+    console.log('⚡ MovementProvider useEffect triggered, user ID:', user?.id);
     if (user?.id) {
       loadUserData();
+    } else {
+      console.log('⚠️ No user ID available, skipping data load');
     }
   }, [user?.id]);
 
   const loadUserData = async () => {
     if (!user?.id) return;
 
+    console.log('🔄 Loading movement data for user:', user.id);
     setLoading(true);
     setError(null);
 
     try {
       // Load combinations and move counters in parallel
+      console.log('📡 Fetching combinations and move counters...');
       const [combinationsResponse, countersResponse] = await Promise.all([
         apiService.getCombinations(user.id),
         apiService.getMoveCounters(user.id)
       ]);
 
+      console.log('📦 Combinations response:', combinationsResponse);
+      console.log('📊 Counters response:', countersResponse);
+
       if (combinationsResponse.success) {
         setSavedCombinations(combinationsResponse.combinations || []);
+        console.log('✅ Loaded combinations:', combinationsResponse.combinations?.length || 0);
+      } else {
+        console.warn('⚠️ Combinations response not successful:', combinationsResponse);
       }
 
       if (countersResponse.success) {
         setMoveCounters(countersResponse.counters || []);
+        console.log('✅ Loaded move counters:', countersResponse.counters?.length || 0);
+      } else {
+        console.warn('⚠️ Counters response not successful:', countersResponse);
       }
     } catch (err) {
-      console.error('Failed to load movement data:', err);
+      console.error('❌ Failed to load movement data:', err);
       setError('Failed to load movement data');
       
       // Load sample data as fallback
+      console.log('🔄 Loading sample data as fallback...');
       const sampleCombinations: Combination[] = [
         {
           combination_id: 'sample-1',
@@ -176,8 +195,10 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         }
       ];
       setSavedCombinations(sampleCombinations);
+      console.log('📋 Sample combinations loaded:', sampleCombinations.length);
     } finally {
       setLoading(false);
+      console.log('✅ Movement data loading complete');
     }
   };
 
@@ -199,7 +220,10 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const addCombination = async (combination: Combination) => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      console.error('❌ No user logged in, cannot save combination');
+      throw new Error('User not authenticated. Please log in to save combinations.');
+    }
 
     try {
       const response = await apiService.addCombination({
@@ -218,14 +242,17 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         // Add the combination with the ID from the server
         const newCombination = {
           ...combination,
-          combination_id: response.combination_id
+          combination_id: response.combination?.combination_id || response.combination_id
         };
         setSavedCombinations(prev => [...prev, newCombination]);
+        console.log('✅ Combination added successfully:', newCombination);
+        console.log('📋 Updated combinations list:', prev => [...prev, newCombination]);
       }
     } catch (err) {
       console.error('Failed to save combination:', err);
       // Add locally as fallback
       setSavedCombinations(prev => [...prev, combination]);
+      console.log('⚠️ Added combination locally as fallback');
     }
   };
 

@@ -24,48 +24,48 @@ const ParentDashboard = () => {
 
   return (
     <div className="max-w-screen-lg mx-auto">
-      <h1 className="text-2xl font-bold text-blue-900 mb-6">
+      <h1 className="text-2xl font-bold text-blue-700 mb-6">
         {childName}'s Karate Practice - Parent Dashboard
       </h1>
       
       {/* Overview cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4 flex items-center">
-          <div className="bg-blue-100 p-3 rounded-full mr-4">
+        <div className="bg-white rounded-lg shadow-lg p-4 flex items-center">
+          <div className="bg-gradient-to-br from-blue-100 to-orange-100 p-3 rounded-full mr-4">
             <Award size={24} className="text-blue-600" />
           </div>
           <div>
             <p className="text-sm text-gray-500">Total Points</p>
-            <p className="text-2xl font-bold text-blue-900">{totalPoints}</p>
+            <p className="text-2xl font-bold text-blue-700">{totalPoints}</p>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow p-4 flex items-center">
-          <div className="bg-green-100 p-3 rounded-full mr-4">
-            <Calendar size={24} className="text-green-600" />
+        <div className="bg-white rounded-lg shadow-lg p-4 flex items-center">
+          <div className="bg-gradient-to-br from-blue-100 to-orange-100 p-3 rounded-full mr-4">
+            <Calendar size={24} className="text-orange-600" />
           </div>
           <div>
             <p className="text-sm text-gray-500">Practice Sessions</p>
-            <p className="text-2xl font-bold text-blue-900">{totalSessions}</p>
+            <p className="text-2xl font-bold text-blue-700">{totalSessions}</p>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow p-4 flex items-center">
-          <div className="bg-orange-100 p-3 rounded-full mr-4">
+        <div className="bg-white rounded-lg shadow-lg p-4 flex items-center">
+          <div className="bg-gradient-to-br from-blue-100 to-orange-100 p-3 rounded-full mr-4">
             <BarChart size={24} className="text-orange-600" />
           </div>
           <div>
             <p className="text-sm text-gray-500">Total Punches</p>
-            <p className="text-2xl font-bold text-blue-900">{totalPunches}</p>
+            <p className="text-2xl font-bold text-blue-700">{totalPunches}</p>
           </div>
         </div>
       </div>
       
       {/* Pending rewards approval */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-blue-900">Pending Reward Approvals</h2>
-          <a href="/rewards" className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
+          <h2 className="text-xl font-bold text-blue-700">Pending Reward Approvals</h2>
+          <a href="/rewards" className="text-sm text-blue-600 hover:text-orange-600 flex items-center">
             View All <ChevronRight size={16} />
           </a>
         </div>
@@ -97,10 +97,10 @@ const ParentDashboard = () => {
       </div>
       
       {/* Recent practice sessions */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white rounded-lg shadow-lg p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-blue-900">Recent Practice Sessions</h2>
-          <a href="/history" className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
+          <h2 className="text-xl font-bold text-blue-700">Recent Practice Sessions</h2>
+          <a href="/history" className="text-sm text-blue-600 hover:text-orange-600 flex items-center">
             View All <ChevronRight size={16} />
           </a>
         </div>

@@ -16,6 +16,7 @@ import { KataDetailPage } from './pages/KataDetailPage';
 import KataReferencePage from './pages/KataReferencePage';
 import MovementTrackerPage from './pages/MovementTrackerPage';
 import DashboardPage from './pages/DashboardPage';
+import VideoPracticePage from './pages/VideoPracticePage';
 
 function AppContent() {
   const { isAuthenticated, loading, user } = useAuth();
@@ -56,6 +57,7 @@ function AppContent() {
               <Route path="/kata" element={<KataReferencePage />} />
               <Route path="/kata-reference" element={<KataReferencePage />} />
               <Route path="/movement-tracker" element={<MovementTrackerPage />} />
+              <Route path="/video-practice" element={<VideoPracticePage />} />
             </Routes>
             </Layout>
           </MovementProvider>

@@ -38,8 +38,8 @@ const KataLogger = () => {
           value={selectedKata}
           onChange={(e) => setSelectedKata(e.target.value)}
         >
-          {kataList.map((kata) => (
-            <option key={kata} value={kata}>
+          {kataList.map((kata, index) => (
+            <option key={`kata-option-${index}`} value={kata}>
               {kata}
             </option>
           ))}
@@ -105,7 +105,7 @@ const KataLogger = () => {
           <ul className="bg-blue-50 rounded-lg p-2">
             {currentKatas.map((kata, index) => (
               <motion.li
-                key={index}
+                key={`current-kata-${kata.name}-${index}`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="py-1 border-b border-blue-100 last:border-0"

@@ -4,7 +4,7 @@ export class ApiService {
     (() => {
       // If accessing via IP or hostname, use the same host for API
       const hostname = window.location.hostname;
-      return `http://${hostname}:8082`;
+      return `http://${hostname}:8083`;
     })();
 
   // Make authenticated request with automatic token refresh
