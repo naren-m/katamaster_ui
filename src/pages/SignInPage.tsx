@@ -30,17 +30,20 @@ export const SignInPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-orange-500 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center p-4">
+      {/* Background overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-orange-500/10"></div>
+      <div className="relative z-10">
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mb-4">
             <span className="text-6xl">🥋</span>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent mb-2" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
             KataMaster
           </h1>
-          <p className="text-blue-100">Track your karate journey!</p>
+          <p className="text-blue-700">Track your karate journey!</p>
         </div>
 
         {/* Sign In Card */}
@@ -134,7 +137,7 @@ export const SignInPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-blue-600 to-orange-500 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Processing...' : (isSignUp ? 'Create Account' : 'Sign In')}
             </button>
@@ -186,10 +189,11 @@ export const SignInPage: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-8 text-blue-100 text-sm">
+        <div className="text-center mt-8 text-blue-700 text-sm">
           <p>Built for young karate practitioners</p>
           <p className="mt-1">🥋 Practice • Progress • Achieve 🏆</p>
         </div>
+      </div>
       </div>
     </div>
   );

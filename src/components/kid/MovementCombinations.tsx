@@ -144,7 +144,7 @@ const MovementCombinations: React.FC = () => {
       </div>
 
       {/* Current Move Display */}
-      <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4">
+      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
         <div className="text-center mb-3">
           <h3 className="text-lg font-bold text-green-800 mb-1">
             {currentMove ? getDisplayName(currentMove.type, currentMove.name) : 'No moves'}
@@ -171,7 +171,7 @@ const MovementCombinations: React.FC = () => {
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${getProgress()}%` }}
-              className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-300"
+              className="bg-orange-500 h-2 rounded-full transition-all duration-300"
             />
           </div>
         </div>

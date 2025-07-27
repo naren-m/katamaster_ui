@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiService } from '../services/apiService';
+import { PDFViewer, usePDFViewerKeyboard } from '../components/shared/PDFViewer';
 
 type KataStep = {
   order: number;
@@ -34,6 +35,11 @@ export const KataDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedStep, setSelectedStep] = useState<number>(0);
+  const [pdfViewer, setPdfViewer] = useState<{ isOpen: boolean; kataId: string; kataName: string }>({
+    isOpen: false,
+    kataId: '',
+    kataName: ''
+  });
 
   useEffect(() => {
     const loadKataDetail = async () => {
@@ -58,6 +64,25 @@ export const KataDetailPage: React.FC = () => {
 
     loadKataDetail();
   }, [kataId]);
+
+  const openPDFViewer = (kataId: string, kataName: string) => {
+    setPdfViewer({
+      isOpen: true,
+      kataId: kataId,
+      kataName: kataName
+    });
+  };
+
+  const closePDFViewer = () => {
+    setPdfViewer({
+      isOpen: false,
+      kataId: '',
+      kataName: ''
+    });
+  };
+
+  // Use the PDF viewer keyboard hook
+  usePDFViewerKeyboard(pdfViewer.isOpen, closePDFViewer);
 
   if (loading) {
     return (
@@ -154,9 +179,18 @@ export const KataDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Video Link */}
-              {kata.video_url && (
-                <div className="mt-6">
+              {/* Action Buttons */}
+              <div className="mt-6 space-y-3">
+                {/* PDF Button */}
+                <button
+                  onClick={() => openPDFViewer(kata.id, kata.name)}
+                  className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg font-bold hover:bg-purple-700 transition-colors text-center"
+                >
+                  📄 View Instructions PDF
+                </button>
+
+                {/* Video Link */}
+                {kata.video_url && (
                   <a
                     href={kata.video_url}
                     target="_blank"
@@ -165,8 +199,8 @@ export const KataDetailPage: React.FC = () => {
                   >
                     📹 Watch Video Tutorial
                   </a>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
@@ -282,6 +316,14 @@ export const KataDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* PDF Viewer Modal */}
+      <PDFViewer
+        kataId={pdfViewer.kataId}
+        kataName={pdfViewer.kataName}
+        isOpen={pdfViewer.isOpen}
+        onClose={closePDFViewer}
+      />
     </div>
   );
 };

@@ -10,14 +10,19 @@ type Kata = {
 };
 
 type Session = {
-  id: number;
-  date: string;
+  id: number | string;
+  date: string | Date;
   punches: number;
   kicks: number;
   duration: number;
   katas: string[];
   pointsEarned: number;
   techniques: TechniqueLog[];
+  videoUrl?: string;
+  repetitions?: number;
+  focusAreas?: string[];
+  selfRating?: number;
+  notes?: string;
 };
 
 type PracticeContextType = {
@@ -44,6 +49,7 @@ type PracticeContextType = {
   resetCurrentSession: () => void;
   incrementTechnique: (techniqueId: string) => void;
   getTechniqueCount: (techniqueId: string) => number;
+  addSession: (session: Session) => Promise<void>;
 };
 
 const PracticeContext = createContext<PracticeContextType | undefined>(undefined);
@@ -289,6 +295,44 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
     setTimerInterval(null);
   };
 
+  const addSession = async (session: Session) => {
+    try {
+      // For video sessions, record them to the backend
+      if (session.videoUrl) {
+        await apiService.recordComprehensivePracticeSession({
+          userId: user?.id || 'guest',
+          sessionDate: typeof session.date === 'string' ? session.date : session.date.toISOString().split('T')[0],
+          durationMinutes: Math.floor(session.duration / 60),
+          punches: session.punches || 0,
+          kicks: session.kicks || 0,
+          katas: session.katas.map(kata => ({ name: kata, repetitions: session.repetitions || 1 })),
+          techniques: session.techniques || [],
+          notes: session.notes || `Video practice session: ${session.katas.join(', ')}`,
+          pointsEarned: session.pointsEarned,
+          focusAreas: session.focusAreas || [],
+          selfRating: session.selfRating || 0,
+          videoUrl: session.videoUrl
+        });
+        
+        console.log('✅ Video practice session recorded to database');
+      }
+
+      // Update local state
+      setRecentSessions(prev => [session, ...prev]);
+      setTotalPoints(prev => prev + session.pointsEarned);
+      setTotalSessions(prev => prev + 1);
+      
+      // Update streak for video sessions
+      const sessionDate = typeof session.date === 'string' ? session.date : session.date.toISOString().split('T')[0];
+      const newStreak = await updateStreak(sessionDate);
+      setCurrentStreak(newStreak);
+      
+    } catch (error) {
+      console.error('❌ Failed to add session:', error);
+      throw error;
+    }
+  };
+
   return (
     <PracticeContext.Provider value={{
       currentPunches,
@@ -313,7 +357,8 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
       endSession,
       resetCurrentSession,
       incrementTechnique,
-      getTechniqueCount
+      getTechniqueCount,
+      addSession
     }}>
       {children}
     </PracticeContext.Provider>

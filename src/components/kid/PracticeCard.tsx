@@ -76,7 +76,7 @@ const PracticeCard = () => {
           animate={{ scale: 1, opacity: 1 }}
           className="bg-white rounded-2xl shadow-lg p-6 mb-6"
         >
-          <h2 className="text-2xl font-bold text-center mb-4 text-blue-900" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
+          <h2 className="text-2xl font-bold text-center mb-4 text-blue-700" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
             Practice Complete!
           </h2>
           
@@ -89,27 +89,27 @@ const PracticeCard = () => {
             >
               +{pointsEarned}
             </motion.div>
-            <p className="text-lg text-blue-900">Points Earned</p>
+            <p className="text-lg text-blue-700">Points Earned</p>
           </div>
           
           <MotivationalMessage message={motivationalMessage} />
           
           <div className="mt-4 grid grid-cols-3 gap-4 text-center">
-            <div className="bg-blue-100 p-3 rounded-lg">
-              <p className="text-sm text-blue-800">Punches</p>
-              <p className="text-xl font-bold text-blue-900">{currentPunches}</p>
+            <div className="bg-orange-100 p-3 rounded-lg">
+              <p className="text-sm text-blue-700">Punches</p>
+              <p className="text-xl font-bold text-blue-800">{currentPunches}</p>
             </div>
-            <div className="bg-blue-100 p-3 rounded-lg">
-              <p className="text-sm text-blue-800">Kicks</p>
-              <p className="text-xl font-bold text-blue-900">{currentKicks}</p>
+            <div className="bg-orange-100 p-3 rounded-lg">
+              <p className="text-sm text-blue-700">Kicks</p>
+              <p className="text-xl font-bold text-blue-800">{currentKicks}</p>
             </div>
-            <div className="bg-blue-100 p-3 rounded-lg">
-              <p className="text-sm text-blue-800">Katas</p>
-              <p className="text-xl font-bold text-blue-900">{currentKatas.length}</p>
+            <div className="bg-orange-100 p-3 rounded-lg">
+              <p className="text-sm text-blue-700">Katas</p>
+              <p className="text-xl font-bold text-blue-800">{currentKatas.length}</p>
             </div>
-            <div className="bg-blue-100 p-3 rounded-lg col-span-3">
-              <p className="text-sm text-blue-800">Practice Time</p>
-              <p className="text-xl font-bold text-blue-900">
+            <div className="bg-orange-100 p-3 rounded-lg col-span-3">
+              <p className="text-sm text-blue-700">Practice Time</p>
+              <p className="text-xl font-bold text-blue-800">
                 {Math.floor(sessionTimer / 60)}m {sessionTimer % 60}s
               </p>
             </div>
@@ -117,7 +117,7 @@ const PracticeCard = () => {
           
           <button
             onClick={handleResetView}
-            className="w-full mt-6 bg-green-500 text-white py-3 px-4 rounded-lg text-lg font-bold hover:bg-green-600 transition-colors shadow-md"
+            className="w-full mt-6 bg-orange-500 text-white py-3 px-4 rounded-lg text-lg font-bold hover:bg-orange-600 transition-colors shadow-md"
           >
             Start New Practice
           </button>
@@ -128,7 +128,7 @@ const PracticeCard = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-      <h2 className="text-2xl font-bold mb-4 text-blue-900" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
+      <h2 className="text-2xl font-bold mb-4 text-blue-700" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
         Today's Practice
       </h2>
       
@@ -152,7 +152,7 @@ const PracticeCard = () => {
               className={`flex-1 py-2 px-2 rounded-lg font-bold text-xs transition-colors ${
                 activeTab === 'basic'
                   ? 'bg-orange-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-gray-100 text-gray-700 hover:bg-orange-100'
               }`}
             >
               Basic
@@ -162,7 +162,7 @@ const PracticeCard = () => {
               className={`flex-1 py-2 px-2 rounded-lg font-bold text-xs transition-colors ${
                 activeTab === 'advanced'
                   ? 'bg-orange-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-gray-100 text-gray-700 hover:bg-orange-100'
               }`}
             >
               Advanced
@@ -171,8 +171,8 @@ const PracticeCard = () => {
               onClick={() => setActiveTab('movements')}
               className={`flex-1 py-2 px-2 rounded-lg font-bold text-xs transition-colors ${
                 activeTab === 'movements'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-orange-100'
               }`}
             >
               Movements
@@ -182,7 +182,7 @@ const PracticeCard = () => {
           {activeTab === 'basic' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-800">Punch & Kick Counter</h3>
+                <h3 className="text-lg font-semibold mb-2 text-blue-700">Punch & Kick Counter</h3>
                 <div className="space-y-4">
                   <PunchCounter />
                   <KickCounter />
@@ -190,30 +190,30 @@ const PracticeCard = () => {
               </div>
               
               <div>
-                <h3 className="text-lg font-semibold mb-2 text-blue-800">Kata Practice</h3>
+                <h3 className="text-lg font-semibold mb-2 text-blue-700">Kata Practice</h3>
                 <KataLogger />
               </div>
             </div>
           ) : activeTab === 'advanced' ? (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-2 text-blue-800">Technique Practice</h3>
+              <h3 className="text-lg font-semibold mb-2 text-blue-700">Technique Practice</h3>
               <TechniqueLogger />
             </div>
           ) : (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-2 text-blue-800">Movement Combinations</h3>
+              <h3 className="text-lg font-semibold mb-2 text-blue-700">Movement Combinations</h3>
               <MovementCombinations />
             </div>
           )}
           
           <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2 text-blue-800">Practice Timer</h3>
+            <h3 className="text-lg font-semibold mb-2 text-blue-700">Practice Timer</h3>
             <SessionTimer seconds={sessionTimer} />
           </div>
           
           <button
             onClick={handleFinishPractice}
-            className="w-full bg-green-500 text-white py-3 px-4 rounded-lg text-lg font-bold hover:bg-green-600 transition-colors shadow-md"
+            className="w-full bg-orange-500 text-white py-3 px-4 rounded-lg text-lg font-bold hover:bg-orange-600 transition-colors shadow-md"
           >
             Finish Practice
           </button>

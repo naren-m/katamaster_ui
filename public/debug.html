@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Test</title>
+</head>
+<body>
+    <h1>Debug Test</h1>
+    <p>Check browser console for test messages</p>
+    
+    <script>
+        console.log('🔥 Debug test working!');
+        console.log('📍 Location:', window.location.href);
+        console.log('🌐 User Agent:', navigator.userAgent);
+        
+        // Test basic functionality
+        function testMovementAPI() {
+            console.log('🧪 Testing movement API...');
+            
+            fetch('/api/movement/combinations?user_id=8545b947-8510-4a7d-9bd2-6673634dcf07')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('✅ API test result:', data);
+                })
+                .catch(error => {
+                    console.error('❌ API test failed:', error);
+                });
+        }
+        
+        // Run test on load
+        testMovementAPI();
+        
+        // Add test button
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.createElement('button');
+            button.textContent = 'Test API Again';
+            button.onclick = testMovementAPI;
+            document.body.appendChild(button);
+        });
+    </script>
+</body>
+</html>

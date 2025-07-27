@@ -15,6 +15,7 @@ type AuthContextType = {
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string, isSignUp?: boolean) => Promise<void>;
   signOut: () => Promise<void>;
+  refreshToken: () => Promise<boolean>;
   isAuthenticated: boolean;
 };
 
@@ -98,8 +99,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       });
 
-      // Store token and user data
+      // Store tokens and user data
       localStorage.setItem('katamaster_token', authData.token);
+      if (authData.refresh_token) {
+        localStorage.setItem('katamaster_refresh_token', authData.refresh_token);
+      }
       setUser({
         id: authData.user.id,
         email: authData.user.email,
@@ -130,8 +134,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error('Invalid response from server');
       }
 
-      // Store token and user data
+      // Store tokens and user data
       localStorage.setItem('katamaster_token', authData.token);
+      if (authData.refresh_token) {
+        localStorage.setItem('katamaster_refresh_token', authData.refresh_token);
+      }
       setUser({
         id: authData.user.id,
         email: authData.user.email,
@@ -158,6 +165,51 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const refreshToken = async (): Promise<boolean> => {
+    try {
+      const refreshToken = localStorage.getItem('katamaster_refresh_token');
+      if (!refreshToken) {
+        console.log('No refresh token available');
+        return false;
+      }
+
+      const response = await fetch('/auth/refresh', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      });
+
+      if (!response.ok) {
+        console.log('Token refresh failed:', response.status);
+        // Clear invalid tokens
+        localStorage.removeItem('katamaster_token');
+        localStorage.removeItem('katamaster_refresh_token');
+        setUser(null);
+        return false;
+      }
+
+      const authData = await response.json();
+      
+      // Update stored tokens
+      localStorage.setItem('katamaster_token', authData.token);
+      if (authData.refresh_token) {
+        localStorage.setItem('katamaster_refresh_token', authData.refresh_token);
+      }
+
+      console.log('Token refreshed successfully');
+      return true;
+    } catch (error) {
+      console.error('Token refresh error:', error);
+      // Clear tokens on refresh failure
+      localStorage.removeItem('katamaster_token');
+      localStorage.removeItem('katamaster_refresh_token');
+      setUser(null);
+      return false;
+    }
+  };
+
   const signOut = async () => {
     setLoading(true);
     try {
@@ -171,6 +223,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       // Clear local data regardless of backend response
       localStorage.removeItem('katamaster_token');
+      localStorage.removeItem('katamaster_refresh_token');
       setUser(null);
       setLoading(false);
     }
@@ -182,6 +235,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     signInWithGoogle,
     signInWithEmail,
     signOut,
+    refreshToken,
     isAuthenticated: !!user,
   };
 

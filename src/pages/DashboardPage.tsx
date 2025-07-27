@@ -1,6 +1,6 @@
 import React from 'react';
 import { DashboardAnalytics } from '../components/shared/DashboardAnalytics';
-import { Layout } from '../components/shared/Layout';
+import Layout from '../components/shared/Layout';
 
 const DashboardPage: React.FC = () => {
   return (

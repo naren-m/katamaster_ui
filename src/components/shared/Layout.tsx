@@ -12,7 +12,8 @@ import {
   CalendarDays,
   LogOut,
   BookOpen,
-  Activity
+  Activity,
+  Video
 } from 'lucide-react';
 
 type NavLinkProps = {
@@ -27,7 +28,7 @@ const NavLink = ({ to, icon, label, active }: NavLinkProps) => (
     to={to}
     className={`flex flex-col items-center p-2 rounded-lg transition-all ${
       active 
-        ? 'bg-orange-500 text-white transform scale-110' 
+        ? 'bg-orange-500 text-white transform scale-110 shadow-lg' 
         : 'text-blue-900 hover:bg-orange-100'
     }`}
   >
@@ -43,16 +44,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   
   const kidNavLinks = [
     { to: '/', icon: <Home size={24} />, label: 'Home' },
+    { to: '/video-practice', icon: <Video size={24} />, label: 'Video' },
     { to: '/kata-reference', icon: <BookOpen size={24} />, label: 'Kata' },
-    { to: '/movement-tracker', icon: <Activity size={24} />, label: 'Moves' },
     { to: '/rewards', icon: <Award size={24} />, label: 'Rewards' },
     { to: '/history', icon: <Calendar size={24} />, label: 'History' }
   ];
   
   const parentNavLinks = [
     { to: '/parent', icon: <Home size={24} />, label: 'Dashboard' },
+    { to: '/video-practice', icon: <Video size={24} />, label: 'Video' },
     { to: '/kata-reference', icon: <BookOpen size={24} />, label: 'Kata' },
-    { to: '/movement-tracker', icon: <Activity size={24} />, label: 'Moves' },
     { to: '/rewards', icon: <Award size={24} />, label: 'Rewards' },
     { to: '/history', icon: <Calendar size={24} />, label: 'History' },
     { to: '/calendar', icon: <CalendarDays size={24} />, label: 'Calendar' },
@@ -62,9 +63,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const navLinks = isParentMode ? parentNavLinks : kidNavLinks;
 
   return (
-    <div className="flex flex-col min-h-screen bg-cream">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-orange-50">
       {/* Header */}
-      <header className="bg-blue-900 text-white p-4 flex justify-between items-center shadow-md">
+      <header className="bg-gradient-to-r from-blue-600 to-orange-500 text-white p-4 flex justify-between items-center shadow-md">
         <div className="flex items-center">
           <span className="text-xl font-bold" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
             {isParentMode ? 'Parent Dashboard' : 'Karate Kid Practice'}
@@ -74,14 +75,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <span className="text-sm">Welcome, {user?.name}!</span>
           <button
             onClick={toggleUserMode}
-            className="p-2 bg-orange-500 rounded-full text-white hover:bg-orange-600 transition-all"
+            className="p-2 bg-white bg-opacity-20 rounded-full text-white hover:bg-opacity-30 transition-all shadow-lg"
             aria-label={isParentMode ? "Switch to Kid Mode" : "Switch to Parent Mode"}
           >
             {isParentMode ? <User size={20} /> : <UserCog size={20} />}
           </button>
           <button
             onClick={() => signOut()}
-            className="p-2 bg-red-500 rounded-full text-white hover:bg-red-600 transition-all"
+            className="p-2 bg-red-500 bg-opacity-80 rounded-full text-white hover:bg-red-600 transition-all shadow-lg"
             aria-label="Sign Out"
           >
             <LogOut size={20} />

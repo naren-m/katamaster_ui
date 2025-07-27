@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from '../contexts/UserContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useMovement } from '../contexts/MovementContext';
 import { Activity, Plus, Play, BarChart3, Save, Trash2, SkipForward, SkipBack } from 'lucide-react';
 
@@ -38,7 +38,7 @@ interface MoveCounter {
 }
 
 const MovementTrackerPage: React.FC = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { 
     savedCombinations, 
     moveCounters, 
@@ -50,6 +50,35 @@ const MovementTrackerPage: React.FC = () => {
     getDisplayName,
     practiceProgress 
   } = useMovement();
+  
+  console.log('🏃 MovementTrackerPage - Debug Info:');
+  console.log('👤 User:', user?.id || 'No user');
+  console.log('💾 Saved combinations:', savedCombinations.length);
+  console.log('📊 Move counters:', moveCounters.length);
+  console.log('🎯 Active session:', !!activeSession);
+  console.log('🌐 Current hostname:', window.location.hostname);
+  console.log('📍 Current URL:', window.location.href);
+  
+  // Check if user is authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
+          <div className="text-center">
+            <Activity className="mx-auto h-16 w-16 text-blue-600 mb-4" />
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">Authentication Required</h1>
+            <p className="text-gray-600 mb-6">Please sign in to access the Movement Tracker</p>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Go to Sign In
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const [activeTab, setActiveTab] = useState<'builder' | 'practice' | 'stats'>('builder');
   
   // Available moves data
@@ -131,7 +160,15 @@ const MovementTrackerPage: React.FC = () => {
   };
 
   const saveCombination = async () => {
-    if (!combinationName || currentSequence.length === 0) return;
+    console.log('🎯 Save Combination clicked!');
+    console.log('📋 Combination name:', combinationName);
+    console.log('🎬 Current sequence length:', currentSequence.length);
+    console.log('👤 User state:', user);
+    
+    if (!combinationName || currentSequence.length === 0) {
+      console.log('⚠️ Validation failed - missing name or moves');
+      return;
+    }
 
     const combination: Combination = {
       combination_id: generateId(),
@@ -141,11 +178,21 @@ const MovementTrackerPage: React.FC = () => {
       created_at: new Date().toISOString()
     };
 
-    // Use the addCombination method from MovementContext
-    await addCombination(combination);
-    setCurrentSequence([]);
-    setCombinationName('');
-    setRepeatCount(1);
+    console.log('📦 Combination to save:', combination);
+
+    try {
+      console.log('🚀 Calling addCombination...');
+      // Use the addCombination method from MovementContext
+      await addCombination(combination);
+      console.log('✅ Combination saved successfully!');
+      setCurrentSequence([]);
+      setCombinationName('');
+      setRepeatCount(1);
+    } catch (error) {
+      console.error('❌ Error saving combination:', error);
+      // Show error message to user
+      alert(error instanceof Error ? error.message : 'Failed to save combination');
+    }
   };
 
   // Practice Session functions

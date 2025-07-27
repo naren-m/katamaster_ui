@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import kataData from '../../data/kataReference.json';
+import { PDFViewer, usePDFViewerKeyboard } from './PDFViewer';
+import { KataProgress } from './KataProgress';
+import { useAuth } from '../../contexts/AuthContext';
 
 // Types
 interface Kata {
@@ -30,12 +33,18 @@ interface KataFavorites {
 }
 
 const KataReference: React.FC = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStyle, setSelectedStyle] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [favorites, setFavorites] = useState<KataFavorites>({});
   const [practiceStatus, setPracticeStatus] = useState<KataProgress>({});
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [pdfViewer, setPdfViewer] = useState<{ isOpen: boolean; kataId: string; kataName: string }>({
+    isOpen: false,
+    kataId: '',
+    kataName: ''
+  });
 
   const katas: Kata[] = kataData.katas;
   const styles = [...new Set(katas.map(kata => kata.style))];
@@ -105,13 +114,6 @@ const KataReference: React.FC = () => {
     }));
   };
 
-  const updatePracticeStatus = (kataId: string, status: PracticeStatus) => {
-    setPracticeStatus(prev => ({
-      ...prev,
-      [kataId]: prev[kataId] === status ? null : status
-    }));
-  };
-
   const openKataUrl = (originalSiteUrl: string) => {
     window.open(originalSiteUrl, '_blank', 'noopener,noreferrer');
   };
@@ -119,6 +121,25 @@ const KataReference: React.FC = () => {
   const openVideoUrl = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
+
+  const openPDFViewer = (kataId: string, kataName: string) => {
+    setPdfViewer({
+      isOpen: true,
+      kataId: kataId,
+      kataName: kataName
+    });
+  };
+
+  const closePDFViewer = () => {
+    setPdfViewer({
+      isOpen: false,
+      kataId: '',
+      kataName: ''
+    });
+  };
+
+  // Use the PDF viewer keyboard hook
+  usePDFViewerKeyboard(pdfViewer.isOpen, closePDFViewer);
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -129,31 +150,13 @@ const KataReference: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: PracticeStatus) => {
-    switch (status) {
-      case 'learning': return 'bg-blue-500';
-      case 'practicing': return 'bg-orange-500';
-      case 'mastered': return 'bg-green-500';
-      default: return 'bg-gray-300';
-    }
-  };
-
-  const getStatusText = (status: PracticeStatus) => {
-    switch (status) {
-      case 'learning': return '📚 Learning';
-      case 'practicing': return '🥋 Practicing';
-      case 'mastered': return '🏆 Mastered';
-      default: return 'Set Status';
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-orange-500 p-4">
+    <div className="min-h-screen bg-white p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Kata Reference</h1>
-          <p className="text-blue-100">Explore traditional karate kata from different styles</p>
+          <h1 className="text-4xl font-bold text-blue-700 mb-2">Kata Reference</h1>
+          <p className="text-blue-600">Explore traditional karate kata from different styles</p>
         </div>
 
         {/* Search and Filters */}
@@ -227,7 +230,7 @@ const KataReference: React.FC = () => {
 
         {/* Results Summary */}
         <div className="text-center mb-6">
-          <p className="text-blue-100">
+          <p className="text-blue-600">
             Showing {filteredKatas.length} kata{filteredKatas.length !== 1 ? 's' : ''}
             {showFavoritesOnly && ' from your favorites'}
           </p>
@@ -312,32 +315,27 @@ const KataReference: React.FC = () => {
                           </div>
                         </div>
 
-                        {/* Practice Status */}
+                        {/* Kata Progress Tracking */}
                         <div className="mb-4">
-                          <div className="flex gap-1 mb-2">
-                            {(['learning', 'practicing', 'mastered'] as const).map((status) => (
-                              <button
-                                key={status}
-                                onClick={() => updatePracticeStatus(kata.id, status)}
-                                className={`flex-1 px-2 py-1 text-xs rounded-md font-medium transition-colors ${
-                                  practiceStatus[kata.id] === status
-                                    ? `${getStatusColor(status)} text-white`
-                                    : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                                }`}
-                              >
-                                {getStatusText(status).split(' ')[0]}
-                              </button>
-                            ))}
-                          </div>
-                          {practiceStatus[kata.id] && (
-                            <p className="text-xs text-gray-500 text-center">
-                              {getStatusText(practiceStatus[kata.id])}
-                            </p>
-                          )}
+                          <KataProgress 
+                            kataId={kata.id} 
+                            kataName={kata.name}
+                            onPracticeRecord={() => {
+                              // Optional: Could add success notification here
+                              console.log(`Practice recorded for ${kata.name}`);
+                            }}
+                          />
                         </div>
 
                         {/* Action Buttons */}
                         <div className="space-y-2">
+                          <button
+                            onClick={() => openPDFViewer(kata.id, kata.name)}
+                            className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+                          >
+                            <span>📄 View Instructions PDF</span>
+                          </button>
+                          
                           <button
                             onClick={() => openKataUrl(kata.originalSiteUrl)}
                             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
@@ -392,24 +390,32 @@ const KataReference: React.FC = () => {
 
         {/* Attribution */}
         <div className="mt-12 text-center">
-          <div className="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-sm">
-            <p className="text-blue-100 mb-2">
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+            <p className="text-blue-700 mb-2">
               Kata reference data and links courtesy of{' '}
               <a
                 href="https://katastepbystep.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white font-semibold hover:underline"
+                className="text-blue-600 font-semibold hover:underline"
               >
                 KataStepByStep.com
               </a>
             </p>
-            <p className="text-blue-200 text-sm">
+            <p className="text-blue-600 text-sm">
               Visit their site for detailed step-by-step kata instructions and videos
             </p>
           </div>
         </div>
       </div>
+
+      {/* PDF Viewer Modal */}
+      <PDFViewer
+        kataId={pdfViewer.kataId}
+        kataName={pdfViewer.kataName}
+        isOpen={pdfViewer.isOpen}
+        onClose={closePDFViewer}
+      />
     </div>
   );
 };
