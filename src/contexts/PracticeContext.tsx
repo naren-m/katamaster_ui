@@ -89,16 +89,21 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
         const katasData = await apiService.getKatas();
         console.log('Katas API response:', katasData);
         
-        if (katasData && katasData.katas && Array.isArray(katasData.katas)) {
+        if (katasData && katasData.katas && Array.isArray(katasData.katas) && katasData.katas.length > 0) {
           const kataNames = katasData.katas.map((kata: any) => kata.name);
           console.log('Extracted kata names:', kataNames);
           setKataList(kataNames);
           setKataObjects(katasData.katas);
         } else {
-          console.warn('Invalid katas data structure:', katasData);
-          // Use fallback data
-          setKataList(['Heian Shodan', 'Heian Nidan', 'Heian Sandan']);
-          setKataObjects([]);
+          console.warn('Empty or invalid katas data, using fallback:', katasData);
+          // Use fallback data from sampleData when API returns empty array
+          setKataList(sampleData.kataList);
+          setKataObjects(sampleData.kataList.map((name, index) => ({
+            id: index + 1,
+            name: name,
+            description: `Traditional karate kata: ${name}`,
+            difficulty: index < 2 ? 'Beginner' : 'Intermediate'
+          })));
         }
 
         // Load user-specific data only if authenticated
@@ -139,8 +144,15 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
           }
         }
       } catch (error) {
-        console.error('Failed to load real data, using defaults:', error);
-        // Keep default values if API fails
+        console.error('Failed to load real data, using fallback:', error);
+        // Ensure fallback data is set even if API completely fails
+        setKataList(sampleData.kataList);
+        setKataObjects(sampleData.kataList.map((name, index) => ({
+          id: index + 1,
+          name: name,
+          description: `Traditional karate kata: ${name}`,
+          difficulty: index < 2 ? 'Beginner' : 'Intermediate'
+        })));
       }
     };
 
