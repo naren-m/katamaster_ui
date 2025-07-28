@@ -18,6 +18,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ kataId, kataName, isOpen, 
   const pdfUrl = `http://192.168.68.138:8083/katas/${getPDFFileName(kataId)}`;
   
   function getPDFFileName(kataId: string): string {
+    // Only include the 12 Shotokan katas that are in our database
     const kataPDFMap: { [key: string]: string } = {
       "heian-shodan": "01_Heian_Shodan.pdf",
       "heian-nidan": "02_Heian_Nidan.pdf", 
@@ -28,27 +29,9 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ kataId, kataName, isOpen, 
       "tekki-nidan": "07_Tekki_Nidan.pdf",
       "tekki-sandan": "08_Tekki_Sandan.pdf",
       "bassai-dai": "09_Bassai_Dai.pdf",
-      "bassai-sho": "10_Bassai_Sho.pdf",
       "kanku-dai": "11_Kanku_Dai.pdf",
-      "kanku-sho": "12_Kanku_Sho.pdf",
       "jion": "13_Jion.pdf",
-      "jitte": "14_Jitte.pdf",
-      "empi": "15_Empi.pdf",
-      "gankaku": "16_Gankaku.pdf",
-      "hangetsu": "17_Hangetsu.pdf",
-      "sochin": "18_Sochin.pdf",
-      "nijushiho": "19_Nijushiho.pdf",
-      "meikyo": "20_Meikyo.pdf",
-      "jiin": "21_Jiin.pdf",
-      "chinte": "22_Chinte.pdf",
-      "unsu": "23_Unsu.pdf",
-      "wankan": "24_Wankan.pdf",
-      "gojushiho-dai": "25_Gojushiho_Dai.pdf",
-      "gojushiho-sho": "26_Gojushiho_Sho.pdf",
-      "gankanku-sho": "27_Gankanku_Sho.pdf",
-      "sanchin": "28_Sanchin.pdf",
-      "tensho": "29_Tensho.pdf",
-      "anan": "30_Anan.pdf"
+      "jitte": "14_Jitte.pdf"
     };
     return kataPDFMap[kataId.toLowerCase()] || "01_Heian_Shodan.pdf";
   }

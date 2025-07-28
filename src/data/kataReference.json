@@ -10,12 +10,17 @@
       "movements": 21,
       "beltLevel": "9th Kyu",
       "meaning": "Peaceful Mind First",
-      "keyTechniques": ["Gedan Barai", "Oi-zuki", "Age-uke", "Tettsui-uchi"],
+      "keyTechniques": [
+        "Gedan Barai",
+        "Oi-zuki",
+        "Age-uke",
+        "Tettsui-uchi"
+      ],
       "practiceTime": "3-5 minutes",
       "origin": "Okinawan Pinan Shodan, modified by Gichin Funakoshi"
     },
     {
-      "id": "heian-nidan", 
+      "id": "heian-nidan",
       "name": "Heian Nidan",
       "style": "Shotokan",
       "difficulty": "beginner",
@@ -24,7 +29,12 @@
       "movements": 26,
       "beltLevel": "8th Kyu",
       "meaning": "Peaceful Mind Second",
-      "keyTechniques": ["Yoko-geri", "Shuto-uke", "Nukite", "Uraken-uchi"],
+      "keyTechniques": [
+        "Yoko-geri",
+        "Shuto-uke",
+        "Nukite",
+        "Uraken-uchi"
+      ],
       "practiceTime": "4-6 minutes",
       "origin": "Okinawan Pinan Nidan, emphasizes balance and timing"
     },
@@ -38,7 +48,12 @@
       "movements": 20,
       "beltLevel": "7th Kyu",
       "meaning": "Peaceful Mind Third",
-      "keyTechniques": ["Morote-uke", "Empi-uchi", "Yama-zuki", "Kosa-dachi"],
+      "keyTechniques": [
+        "Morote-uke",
+        "Empi-uchi",
+        "Yama-zuki",
+        "Kosa-dachi"
+      ],
       "practiceTime": "3-5 minutes",
       "origin": "Features unique double-hand techniques and elbow strikes"
     },
@@ -52,7 +67,12 @@
       "movements": 27,
       "beltLevel": "6th Kyu",
       "meaning": "Peaceful Mind Fourth",
-      "keyTechniques": ["Mae-geri", "Hiza-geri", "Kakiwake-uke", "Kagi-zuki"],
+      "keyTechniques": [
+        "Mae-geri",
+        "Hiza-geri",
+        "Kakiwake-uke",
+        "Kagi-zuki"
+      ],
       "practiceTime": "5-7 minutes",
       "origin": "Introduces knee kicks and hook punches"
     },
@@ -66,21 +86,31 @@
       "movements": 23,
       "beltLevel": "5th Kyu",
       "meaning": "Peaceful Mind Fifth",
-      "keyTechniques": ["Mikazuki-geri", "Juji-uke", "Yama-zuki", "Tobi-mae-geri"],
+      "keyTechniques": [
+        "Mikazuki-geri",
+        "Juji-uke",
+        "Yama-zuki",
+        "Tobi-mae-geri"
+      ],
       "practiceTime": "4-6 minutes",
       "origin": "Most complex of the Heian series, prepares for advanced kata"
     },
     {
       "id": "tekki-shodan",
       "name": "Tekki Shodan",
-      "style": "Shotokan", 
+      "style": "Shotokan",
       "difficulty": "intermediate",
       "url": "https://www.youtube.com/watch?v=tekki-shodan",
       "description": "Horse stance kata, builds leg strength and teaches close-quarter fighting",
       "movements": 29,
       "beltLevel": "3rd Kyu",
       "meaning": "Iron Horse First",
-      "keyTechniques": ["Kiba-dachi", "Nami-ashi", "Gedan-barai", "Haiwan-uke"],
+      "keyTechniques": [
+        "Kiba-dachi",
+        "Nami-ashi",
+        "Gedan-barai",
+        "Haiwan-uke"
+      ],
       "practiceTime": "3-4 minutes",
       "origin": "Originally called Naihanchi, performed entirely in horse stance"
     },
@@ -94,7 +124,12 @@
       "movements": 24,
       "beltLevel": "2nd Kyu",
       "meaning": "Iron Horse Second",
-      "keyTechniques": ["Kiba-dachi", "Gedan-barai", "Uchi-uke", "Tettsui-uchi"],
+      "keyTechniques": [
+        "Kiba-dachi",
+        "Gedan-barai",
+        "Uchi-uke",
+        "Tettsui-uchi"
+      ],
       "practiceTime": "3-4 minutes",
       "origin": "Emphasizes power generation from stable base"
     },
@@ -108,7 +143,12 @@
       "movements": 36,
       "beltLevel": "1st Kyu",
       "meaning": "Iron Horse Third",
-      "keyTechniques": ["Kiba-dachi", "Ura-zuki", "Sukui-uke", "Mae-geri"],
+      "keyTechniques": [
+        "Kiba-dachi",
+        "Ura-zuki",
+        "Sukui-uke",
+        "Mae-geri"
+      ],
       "practiceTime": "4-5 minutes",
       "origin": "Tests mastery of horse stance with advanced combinations"
     },
@@ -122,7 +162,12 @@
       "movements": 42,
       "beltLevel": "1st Kyu",
       "meaning": "To Storm a Fortress - Major",
-      "keyTechniques": ["Yama-zuki", "Shuto-uke", "Ura-zuki", "Tetsui-otoshi"],
+      "keyTechniques": [
+        "Yama-zuki",
+        "Shuto-uke",
+        "Ura-zuki",
+        "Tetsui-otoshi"
+      ],
       "practiceTime": "6-8 minutes",
       "origin": "Ancient Okinawan kata, represents breaking through an enemy castle"
     },
@@ -136,93 +181,14 @@
       "movements": 65,
       "beltLevel": "1st Dan",
       "meaning": "To View the Sky - Major",
-      "keyTechniques": ["Kanku-kamae", "Tobi-yoko-geri", "Sanchin-dachi", "Juji-uke"],
+      "keyTechniques": [
+        "Kanku-kamae",
+        "Tobi-yoko-geri",
+        "Sanchin-dachi",
+        "Juji-uke"
+      ],
       "practiceTime": "8-10 minutes",
       "origin": "Based on Kushanku, named after Chinese envoy who taught in Okinawa"
-    },
-    {
-      "id": "saifa",
-      "name": "Saifa",
-      "style": "Goju Ryu",
-      "difficulty": "beginner",
-      "url": "https://www.youtube.com/watch?v=saifa",
-      "description": "Breaking and tearing, introduces Goju Ryu breathing and circular techniques",
-      "movements": 23,
-      "beltLevel": "6th Kyu",
-      "meaning": "Breaking and Tearing",
-      "keyTechniques": ["Sanchin-dachi", "Shisochin-dachi", "Mawashi-uke", "Uraken-uchi"],
-      "practiceTime": "4-5 minutes",
-      "origin": "Classical Goju Ryu kata emphasizing hard and soft techniques"
-    },
-    {
-      "id": "seiyunchin",
-      "name": "Seiyunchin",
-      "style": "Goju Ryu",
-      "difficulty": "intermediate",
-      "url": "https://www.youtube.com/watch?v=seiyunchin",
-      "description": "Attack, conquer, suppress - dynamic Goju Ryu kata",
-      "movements": 26,
-      "beltLevel": "4th Kyu",
-      "meaning": "Attack, Conquer, Suppress",
-      "keyTechniques": ["Sanchin-dachi", "Gedan-barai", "Teisho-uchi", "Hiza-geri"],
-      "practiceTime": "5-6 minutes",
-      "origin": "Features close-quarter fighting and grappling applications"
-    },
-    {
-      "id": "seipai",
-      "name": "Seipai",
-      "style": "Goju Ryu",
-      "difficulty": "intermediate",
-      "url": "https://www.youtube.com/watch?v=seipai",
-      "description": "Eighteen hands, complex bunkai applications with throws and joint locks",
-      "movements": 18,
-      "beltLevel": "2nd Kyu",
-      "meaning": "Eighteen Hands",
-      "keyTechniques": ["Sanchin-dachi", "Tora-guchi", "Koken-uchi", "Teisho-uchi"],
-      "practiceTime": "3-4 minutes",
-      "origin": "Based on 18 martial arts techniques from ancient China"
-    },
-    {
-      "id": "suparimpei",
-      "name": "Suparimpei",
-      "style": "Goju Ryu", 
-      "difficulty": "advanced",
-      "url": "https://www.youtube.com/watch?v=suparimpei",
-      "description": "108 hands, ultimate kata of Goju Ryu system",
-      "movements": 108,
-      "beltLevel": "3rd Dan",
-      "meaning": "One Hundred and Eight Hands",
-      "keyTechniques": ["Sanchin-dachi", "All Goju techniques", "Neko-ashi-dachi", "Multiple breathing patterns"],
-      "practiceTime": "12-15 minutes",
-      "origin": "Most advanced Goju kata, represents mastery of the system"
-    },
-    {
-      "id": "pinan-shodan",
-      "name": "Pinan Shodan",
-      "style": "Shito-ryu",
-      "difficulty": "beginner", 
-      "url": "https://www.youtube.com/watch?v=pinan-shodan",
-      "description": "Peaceful mind first form, original Okinawan version",
-      "movements": 20,
-      "beltLevel": "9th Kyu",
-      "meaning": "Peaceful Mind First",
-      "keyTechniques": ["Gedan-barai", "Oi-zuki", "Age-uke", "Yoko-uke"],
-      "practiceTime": "3-4 minutes",
-      "origin": "Original Pinan kata created by Anko Itosu"
-    },
-    {
-      "id": "naifanchi-shodan",
-      "name": "Naifanchi Shodan",
-      "style": "Shito-ryu",
-      "difficulty": "intermediate",
-      "url": "https://www.youtube.com/watch?v=naifanchi-shodan",
-      "description": "Side-to-side fighting, emphasizes lateral movement and close combat",
-      "movements": 15,
-      "beltLevel": "4th Kyu",
-      "meaning": "Internal Divided Conflict",
-      "keyTechniques": ["Naihanchi-dachi", "Gedan-barai", "Uchi-uke", "Tettsui-uchi"],
-      "practiceTime": "2-3 minutes",
-      "origin": "Ancient kata preserved in original Okinawan form"
     },
     {
       "id": "bassai-sho",
@@ -234,7 +200,12 @@
       "movements": 27,
       "beltLevel": "2nd Dan",
       "meaning": "To Storm a Fortress - Minor",
-      "keyTechniques": ["Shuto-uke", "Yama-zuki", "Manji-uke", "Gyaku-zuki"],
+      "keyTechniques": [
+        "Shuto-uke",
+        "Yama-zuki",
+        "Manji-uke",
+        "Gyaku-zuki"
+      ],
       "practiceTime": "4-5 minutes",
       "origin": "Shorter, more concentrated version of Bassai Dai"
     },
@@ -248,7 +219,12 @@
       "movements": 48,
       "beltLevel": "2nd Dan",
       "meaning": "To View the Sky - Minor",
-      "keyTechniques": ["Tobi-geri", "Ura-zuki", "Shuto-uke", "Kanku-kamae"],
+      "keyTechniques": [
+        "Tobi-geri",
+        "Ura-zuki",
+        "Shuto-uke",
+        "Kanku-kamae"
+      ],
       "practiceTime": "6-7 minutes",
       "origin": "Faster variation emphasizing jumping techniques"
     },
@@ -262,7 +238,12 @@
       "movements": 47,
       "beltLevel": "1st Kyu",
       "meaning": "Temple Sound/Mercy",
-      "keyTechniques": ["Chudan-zuki", "Gedan-barai", "Oi-zuki", "Gyaku-zuki"],
+      "keyTechniques": [
+        "Chudan-zuki",
+        "Gedan-barai",
+        "Oi-zuki",
+        "Gyaku-zuki"
+      ],
       "practiceTime": "6-7 minutes",
       "origin": "Named after a Buddhist temple, emphasizes fundamental techniques"
     },
@@ -276,12 +257,14 @@
       "movements": 37,
       "beltLevel": "1st Dan",
       "meaning": "Flying Swallow",
-      "keyTechniques": ["Tobi-yoko-geri", "Empi-uchi", "Shuto-uke", "Uraken-uchi"],
+      "keyTechniques": [
+        "Tobi-yoko-geri",
+        "Empi-uchi",
+        "Shuto-uke",
+        "Uraken-uchi"
+      ],
       "practiceTime": "5-6 minutes",
       "origin": "Named for its swallow-like swift movements and changes of direction"
     }
-  ],
-  "lastUpdated": "2025-01-03",
-  "dataSource": "Traditional karate kata reference",
-  "totalKatas": 20
+  ]
 }

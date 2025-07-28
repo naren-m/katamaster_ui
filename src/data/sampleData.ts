@@ -17,17 +17,24 @@ export const sampleData = {
     { id: 5, name: "Special Activity", points: 120, earned: false, progress: 0.25, icon: "activity" }
   ],
   recentSessions: [
-    { id: 1, date: "2025-05-29", punches: 45, kicks: 32, duration: 25, katas: ["Heian Shodan x3", "Kata 1 x2"], pointsEarned: 30 },
+    { id: 1, date: "2025-05-29", punches: 45, kicks: 32, duration: 25, katas: ["Heian Shodan x3", "Heian Sandan x2"], pointsEarned: 30 },
     { id: 2, date: "2025-05-28", punches: 60, kicks: 45, duration: 30, katas: ["Heian Nidan x4"], pointsEarned: 35 },
     { id: 3, date: "2025-05-26", punches: 50, kicks: 38, duration: 20, katas: ["Heian Shodan x2", "Heian Nidan x1"], pointsEarned: 25 },
-    { id: 4, date: "2025-05-25", punches: 40, kicks: 30, duration: 15, katas: ["Kata 1 x3"], pointsEarned: 20 }
+    { id: 4, date: "2025-05-25", punches: 40, kicks: 30, duration: 15, katas: ["Tekki Shodan x3"], pointsEarned: 20 }
   ],
   kataList: [
     "Heian Shodan",
     "Heian Nidan",
-    "Kata 1",
-    "Kata 2",
-    "Kata 3"
+    "Heian Sandan",
+    "Heian Yondan",
+    "Heian Godan",
+    "Tekki Shodan",
+    "Tekki Nidan",
+    "Tekki Sandan",
+    "Bassai Dai",
+    "Kanku Dai",
+    "Jion",
+    "Jitte"
   ],
   motivationalMessages: [
     "Amazing job! Your karate skills are growing!",

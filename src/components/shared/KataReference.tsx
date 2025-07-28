@@ -218,7 +218,7 @@ const KataReference: React.FC = () => {
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                ❤️ {showFavoritesOnly ? 'Show All' : 'Favorites Only'}
+                ♥ {showFavoritesOnly ? 'Show All' : 'Favorites Only'}
               </button>
             </div>
           </div>
@@ -273,10 +273,11 @@ const KataReference: React.FC = () => {
                           <button
                             onClick={() => toggleFavorite(kata.id)}
                             className={`text-2xl transition-transform hover:scale-110 ${
-                              favorites[kata.id] ? 'text-red-500' : 'text-gray-300'
+                              favorites[kata.id] ? 'text-red-500' : 'text-gray-400 hover:text-gray-600'
                             }`}
+                            title={favorites[kata.id] ? 'Remove from favorites' : 'Add to favorites'}
                           >
-                            ❤️
+                            {favorites[kata.id] ? '♥' : '♡'}
                           </button>
                         </div>
 
