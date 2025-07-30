@@ -75,8 +75,13 @@ export const DashboardAnalytics: React.FC = () => {
       }
     } catch (error) {
       console.error('Failed to fetch dashboard analytics:', error);
-      // Set mock data for development/demo
-      setAnalytics(getMockAnalytics());
+      // Use default stats when API fails
+      setAnalytics({
+        stats: getDefaultStats(),
+        topKatas: [],
+        recentActivity: [],
+        progressTrend: []
+      });
     } finally {
       setLoading(false);
     }
@@ -101,73 +106,6 @@ export const DashboardAnalytics: React.FC = () => {
     lastPracticeDate: ''
   });
 
-  const getMockAnalytics = (): DashboardAnalyticsData => ({
-    stats: {
-      totalKatasPracticed: 8,
-      totalSessions: 24,
-      totalRepetitions: 156,
-      totalPracticeMinutes: 720,
-      averageRating: 7.8,
-      currentStreak: 5,
-      totalPoints: 1240,
-      masteredKatas: 2,
-      favoriteKata: 'Heian Shodan',
-      lastPracticeDate: new Date().toISOString()
-    },
-    topKatas: [
-      {
-        kataId: '1',
-        kataName: 'Heian Shodan',
-        totalRepetitions: 45,
-        masteryPercentage: 85,
-        mastered: true,
-        lastPracticed: new Date(Date.now() - 86400000).toISOString()
-      },
-      {
-        kataId: '2', 
-        kataName: 'Heian Nidan',
-        totalRepetitions: 32,
-        masteryPercentage: 64,
-        mastered: false,
-        lastPracticed: new Date(Date.now() - 172800000).toISOString()
-      },
-      {
-        kataId: '3',
-        kataName: 'Tekki Shodan',
-        totalRepetitions: 28,
-        masteryPercentage: 56,
-        mastered: false,
-        lastPracticed: new Date(Date.now() - 259200000).toISOString()
-      }
-    ],
-    recentActivity: [
-      {
-        id: '1',
-        type: 'kata_practice',
-        activityName: 'Heian Shodan Practice',
-        description: 'Completed 8 repetitions with focus on timing',
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
-        pointsEarned: 40,
-        icon: '🥋'
-      },
-      {
-        id: '2',
-        type: 'achievement',
-        activityName: 'Consistency Master',
-        description: 'Practiced for 5 consecutive days',
-        timestamp: new Date(Date.now() - 7200000).toISOString(),
-        pointsEarned: 100,
-        icon: '🏆'
-      }
-    ],
-    progressTrend: [
-      { date: '2024-01-20', sessions: 2, repetitions: 15 },
-      { date: '2024-01-21', sessions: 1, repetitions: 8 },
-      { date: '2024-01-22', sessions: 3, repetitions: 22 },
-      { date: '2024-01-23', sessions: 2, repetitions: 18 },
-      { date: '2024-01-24', sessions: 1, repetitions: 12 }
-    ]
-  });
 
   const getStatIcon = (statType: string) => {
     switch (statType) {

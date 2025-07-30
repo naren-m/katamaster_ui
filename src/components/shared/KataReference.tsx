@@ -12,7 +12,6 @@ interface Kata {
   style: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   url: string;
-  originalSiteUrl: string;
   description: string;
   movements: number;
   beltLevel: string;
@@ -114,9 +113,6 @@ const KataReference: React.FC = () => {
     }));
   };
 
-  const openKataUrl = (originalSiteUrl: string) => {
-    window.open(originalSiteUrl, '_blank', 'noopener,noreferrer');
-  };
 
   const openVideoUrl = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -222,7 +218,7 @@ const KataReference: React.FC = () => {
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                ❤️ {showFavoritesOnly ? 'Show All' : 'Favorites Only'}
+                ♥ {showFavoritesOnly ? 'Show All' : 'Favorites Only'}
               </button>
             </div>
           </div>
@@ -277,10 +273,11 @@ const KataReference: React.FC = () => {
                           <button
                             onClick={() => toggleFavorite(kata.id)}
                             className={`text-2xl transition-transform hover:scale-110 ${
-                              favorites[kata.id] ? 'text-red-500' : 'text-gray-300'
+                              favorites[kata.id] ? 'text-red-500' : 'text-gray-400 hover:text-gray-600'
                             }`}
+                            title={favorites[kata.id] ? 'Remove from favorites' : 'Add to favorites'}
                           >
-                            ❤️
+                            {favorites[kata.id] ? '♥' : '♡'}
                           </button>
                         </div>
 
@@ -336,13 +333,6 @@ const KataReference: React.FC = () => {
                             <span>📄 View Instructions PDF</span>
                           </button>
                           
-                          <button
-                            onClick={() => openKataUrl(kata.originalSiteUrl)}
-                            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                          >
-                            <span>View on KataStepByStep</span>
-                            <span className="text-sm">↗️</span>
-                          </button>
                           
                           <button
                             onClick={() => openVideoUrl(kata.url)}
@@ -392,18 +382,10 @@ const KataReference: React.FC = () => {
         <div className="mt-12 text-center">
           <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
             <p className="text-blue-700 mb-2">
-              Kata reference data and links courtesy of{' '}
-              <a
-                href="https://katastepbystep.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 font-semibold hover:underline"
-              >
-                KataStepByStep.com
-              </a>
+              Kata reference data for traditional karate forms
             </p>
             <p className="text-blue-600 text-sm">
-              Visit their site for detailed step-by-step kata instructions and videos
+              Comprehensive collection of kata instructions and techniques
             </p>
           </div>
         </div>

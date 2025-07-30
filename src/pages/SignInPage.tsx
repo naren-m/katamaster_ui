@@ -173,8 +173,8 @@ export const SignInPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => {
-                  setEmail('testuser@example.com');
-                  setPassword('testpass123');
+                  setEmail('user@example.com');
+                  setPassword('password123');
                   setIsSignUp(false);
                 }}
                 className="flex-1 bg-green-500 text-white text-xs py-2 px-3 rounded hover:bg-green-600 transition-colors"

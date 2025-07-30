@@ -10,7 +10,22 @@ import SessionTimer from './SessionTimer';
 import MotivationalMessage from './MotivationalMessage';
 import MovementCombinations from './MovementCombinations';
 import Confetti from 'react-confetti';
-import { sampleData } from '../../data/sampleData';
+
+// Authentic karate motivational messages
+const MOTIVATIONAL_MESSAGES = [
+  "Amazing job! Your karate skills are growing!",
+  "Wow! Look at those punches and kicks!",
+  "You're becoming a karate master!",
+  "Your sensei would be proud!",
+  "Keep it up, karate star!",
+  "You're on fire today!",
+  "Those were some awesome moves!",
+  "Your practice is paying off!",
+  "Outstanding technique!",
+  "You're getting stronger every day!",
+  "Perfect form! Keep training hard!",
+  "Excellent dedication to your practice!"
+];
 
 const PracticeCard = () => {
   const { 
@@ -46,8 +61,7 @@ const PracticeCard = () => {
       setShowCompleted(true);
       
       // Get random motivational message
-      const messages = sampleData.motivationalMessages;
-      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      const randomMessage = MOTIVATIONAL_MESSAGES[Math.floor(Math.random() * MOTIVATIONAL_MESSAGES.length)];
       setMotivationalMessage(randomMessage);
       
       // Hide confetti after 5 seconds

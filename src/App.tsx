@@ -26,8 +26,8 @@ function AppContent() {
   if (loading) {
     console.log('App showing loading screen');
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-orange-500 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-karate-blue via-karate-blueLight to-karate-orange flex items-center justify-center">
+        <div className="text-white text-xl font-comic">Loading KataMaster... 🥋</div>
       </div>
     );
   }

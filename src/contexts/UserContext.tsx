@@ -1,5 +1,4 @@
 import { createContext, useState, useContext, ReactNode } from 'react';
-import { sampleData } from '../data/sampleData';
 
 type UserContextType = {
   isParentMode: boolean;
@@ -14,8 +13,8 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isParentMode, setIsParentMode] = useState(false);
-  const [childName, setChildName] = useState(sampleData.child.name);
-  const [childAvatar, setChildAvatar] = useState(sampleData.child.avatar);
+  const [childName, setChildName] = useState('Student');
+  const [childAvatar, setChildAvatar] = useState('ninja-girl');
 
   const toggleUserMode = () => {
     setIsParentMode(!isParentMode);

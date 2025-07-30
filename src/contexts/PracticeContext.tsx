@@ -1,8 +1,8 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { sampleData } from '../data/sampleData';
 import { TechniqueLog, TECHNIQUES } from '../types/techniques';
 import { apiService } from '../services/apiService';
 import { useAuth } from './AuthContext';
+import { EXTRACTED_KATA_DATABASE, getAllKataNames, getAllKataObjects } from '../data/extractedKataData';
 
 type Kata = {
   name: string;
@@ -89,16 +89,27 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
         const katasData = await apiService.getKatas();
         console.log('Katas API response:', katasData);
         
-        if (katasData && katasData.katas && Array.isArray(katasData.katas)) {
+        if (katasData && katasData.katas && Array.isArray(katasData.katas) && katasData.katas.length > 0) {
           const kataNames = katasData.katas.map((kata: any) => kata.name);
           console.log('Extracted kata names:', kataNames);
           setKataList(kataNames);
           setKataObjects(katasData.katas);
         } else {
-          console.warn('Invalid katas data structure:', katasData);
-          // Use fallback data
-          setKataList(['Heian Shodan', 'Heian Nidan', 'Heian Sandan']);
-          setKataObjects([]);
+          console.warn('Empty or invalid katas data, using extracted kata database fallback:', katasData);
+          // Use fallback data from extracted kata database when API returns empty array
+          const extractedKataNames = getAllKataNames();
+          const extractedKataObjects = getAllKataObjects();
+          
+          setKataList(extractedKataNames);
+          setKataObjects(extractedKataObjects.map((kata) => ({
+            id: kata.id,
+            name: kata.name,
+            description: `${kata.english_translation} - Traditional Shotokan karate kata with ${kata.number_of_movements} movements`,
+            difficulty: kata.difficulty_level,
+            movements: kata.number_of_movements,
+            japanese_name: kata.japanese_name,
+            english_translation: kata.english_translation
+          })));
         }
 
         // Load user-specific data only if authenticated
@@ -139,8 +150,21 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
           }
         }
       } catch (error) {
-        console.error('Failed to load real data, using defaults:', error);
-        // Keep default values if API fails
+        console.error('Failed to load real data, using extracted kata database fallback:', error);
+        // Ensure fallback data from extracted database is set even if API completely fails
+        const extractedKataNames = getAllKataNames();
+        const extractedKataObjects = getAllKataObjects();
+        
+        setKataList(extractedKataNames);
+        setKataObjects(extractedKataObjects.map((kata) => ({
+          id: kata.id,
+          name: kata.name,
+          description: `${kata.english_translation} - Traditional Shotokan karate kata with ${kata.number_of_movements} movements`,
+          difficulty: kata.difficulty_level,
+          movements: kata.number_of_movements,
+          japanese_name: kata.japanese_name,
+          english_translation: kata.english_translation
+        })));
       }
     };
 
@@ -188,7 +212,8 @@ export const PracticeProvider = ({ children }: { children: ReactNode }) => {
   const updateStreak = async (newSessionDate: string) => {
     try {
       // Get fresh user stats which includes real streak calculation
-      const userStats = await apiService.getUserProgress('user1');
+      if (!user?.id) return 1; // Default streak for non-authenticated users
+      const userStats = await apiService.getUserProgress(user.id);
       return userStats.current_streak || 0;
     } catch (error) {
       console.error('Failed to get updated streak:', error);

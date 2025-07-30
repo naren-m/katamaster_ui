@@ -1,5 +1,4 @@
 import { createContext, useState, useContext, ReactNode } from 'react';
-import { sampleData } from '../data/sampleData';
 
 type Reward = {
   id: number;
@@ -23,10 +22,21 @@ type RewardsContextType = {
   updateRewardProgress: (points: number) => void;
 };
 
+// Authentic karate-themed rewards system
+const DEFAULT_REWARDS: Reward[] = [
+  { id: 1, name: "Ice Cream", points: 50, earned: false, approved: false, icon: "ice-cream" },
+  { id: 2, name: "Pizza Night", points: 150, earned: false, approved: false, icon: "pizza" },
+  { id: 3, name: "Movie Night", points: 200, earned: false, approved: false, icon: "film" },
+  { id: 4, name: "New Toy", points: 100, earned: false, approved: false, icon: "toy" },
+  { id: 5, name: "Special Activity", points: 120, earned: false, approved: false, icon: "activity" },
+  { id: 6, name: "Extra Screen Time", points: 75, earned: false, approved: false, icon: "screen" },
+  { id: 7, name: "Stay Up Late", points: 180, earned: false, approved: false, icon: "moon" }
+];
+
 const RewardsContext = createContext<RewardsContextType | undefined>(undefined);
 
 export const RewardsProvider = ({ children }: { children: ReactNode }) => {
-  const [rewards, setRewards] = useState<Reward[]>(sampleData.rewards);
+  const [rewards, setRewards] = useState<Reward[]>(DEFAULT_REWARDS);
 
   const pendingRewards = rewards.filter(r => r.earned && !r.approved);
   const approvedRewards = rewards.filter(r => r.earned && r.approved);

@@ -38,6 +38,7 @@ export const KataProgress: React.FC<KataProgressProps> = ({
     selfRating: 7.5,
   });
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     if (user?.id) {
@@ -50,12 +51,41 @@ export const KataProgress: React.FC<KataProgressProps> = ({
     
     try {
       setLoading(true);
+      setError('');
       const progressData = await apiService.getKataProgress(user.id, kataId);
       if (progressData?.progress) {
-        setProgress(progressData.progress);
+        // Ensure all required fields have default values
+        const processedProgress = {
+          kataId: progressData.progress.kata_id || kataId,
+          userId: progressData.progress.user_id || user.id,
+          totalPracticeSessions: progressData.progress.total_practice_sessions || 0,
+          totalPracticeMinutes: progressData.progress.total_practice_minutes || 0,
+          totalRepetitions: progressData.progress.total_repetitions || 0,
+          averageRating: progressData.progress.average_rating || 0,
+          lastPracticed: progressData.progress.last_practiced || '',
+          mastered: progressData.progress.mastered || false,
+          masteryPercentage: progressData.progress.mastery_percentage || 0,
+          nextGoal: progressData.progress.next_goal || 'Start practicing to track your progress'
+        };
+        setProgress(processedProgress);
+      } else {
+        // Set default progress for new users
+        setProgress({
+          kataId,
+          userId: user.id,
+          totalPracticeSessions: 0,
+          totalPracticeMinutes: 0,
+          totalRepetitions: 0,
+          averageRating: 0,
+          lastPracticed: '',
+          mastered: false,
+          masteryPercentage: 0,
+          nextGoal: 'Record your first practice session to start tracking progress'
+        });
       }
     } catch (error) {
       console.error('Failed to fetch kata progress:', error);
+      setError('Failed to load progress data. Please try refreshing the page.');
     } finally {
       setLoading(false);
     }
@@ -67,6 +97,8 @@ export const KataProgress: React.FC<KataProgressProps> = ({
 
     try {
       setSubmitting(true);
+      setError('');
+      
       await apiService.recordKataPractice({
         kataId,
         userId: user.id,
@@ -93,7 +125,21 @@ export const KataProgress: React.FC<KataProgressProps> = ({
       
     } catch (error) {
       console.error('Failed to record practice:', error);
-      alert('Failed to record practice session. Please try again.');
+      
+      // Handle specific error cases
+      if (error instanceof Error) {
+        if (error.message.includes('Authentication failed')) {
+          setError('Your session has expired. Please sign in again.');
+        } else if (error.message.includes('401')) {
+          setError('Authentication required. Please sign in to record practice.');
+        } else if (error.message.includes('500')) {
+          setError('Server error. Please try again in a moment.');
+        } else {
+          setError('Failed to record practice session. Please try again.');
+        }
+      } else {
+        setError('Failed to record practice session. Please try again.');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -115,8 +161,20 @@ export const KataProgress: React.FC<KataProgressProps> = ({
 
   if (!user) {
     return (
-      <div className="text-center p-4 text-gray-500 text-sm">
-        Sign in to track your kata progress
+      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="text-center">
+          <div className="text-2xl mb-2">🥋</div>
+          <h4 className="font-medium text-blue-800 mb-2">Track Your Progress</h4>
+          <p className="text-sm text-blue-600 mb-3">
+            Sign in to record your kata practice sessions and track your improvement over time.
+          </p>
+          <button
+            onClick={() => window.location.href = '/auth'}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+          >
+            Sign In to Get Started
+          </button>
+        </div>
       </div>
     );
   }
@@ -132,6 +190,26 @@ export const KataProgress: React.FC<KataProgressProps> = ({
 
   return (
     <div className="space-y-4">
+      {/* Error Display */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-3 bg-red-50 border border-red-200 rounded-lg"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-red-500">⚠️</span>
+            <p className="text-sm text-red-700">{error}</p>
+            <button
+              onClick={() => setError('')}
+              className="ml-auto text-red-400 hover:text-red-600"
+            >
+              ✕
+            </button>
+          </div>
+        </motion.div>
+      )}
+
       {/* Progress Summary */}
       {progress && (
         <motion.div

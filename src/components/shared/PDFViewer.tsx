@@ -14,10 +14,11 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ kataId, kataName, isOpen, 
 
   if (!isOpen) return null;
 
-  // Construct the PDF URL - using direct PDF server for testing
-  const pdfUrl = `http://192.168.68.138:8083/katas/${getPDFFileName(kataId)}`;
+  // Construct the PDF URL - use frontend static files for reliable access
+  const pdfUrl = `/katas/${getPDFFileName(kataId)}`;
   
   function getPDFFileName(kataId: string): string {
+    // All 30 Shotokan katas from extracted PDF database
     const kataPDFMap: { [key: string]: string } = {
       "heian-shodan": "01_Heian_Shodan.pdf",
       "heian-nidan": "02_Heian_Nidan.pdf", 
