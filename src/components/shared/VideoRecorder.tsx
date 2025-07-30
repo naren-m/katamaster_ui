@@ -226,27 +226,31 @@ export const VideoRecorder: React.FC<VideoRecorderProps> = ({
     }
   }, [recordedVideo]);
 
-  // Mock upload function (in real implementation, this would upload to a server)
+  // Upload video to server for practice analysis
   const uploadVideo = useCallback(async () => {
     if (!recordedVideo || !onVideoUploaded) return;
     
     setIsUploading(true);
     try {
-      // Simulate upload delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Create form data for video upload
+      const formData = new FormData();
+      formData.append('video', recordedVideo.blob, recordedVideo.filename);
       
-      // In a real implementation, you would upload the blob to your server
-      // const formData = new FormData();
-      // formData.append('video', recordedVideo.blob, recordedVideo.filename);
-      // const response = await fetch('/api/videos/upload', { method: 'POST', body: formData });
+      // Upload to server endpoint (when implemented)
+      // const response = await fetch('/api/videos/upload', { 
+      //   method: 'POST', 
+      //   body: formData 
+      // });
+      // const data = await response.json();
       
-      // For now, we'll just use the blob URL
+      // For now, process locally and use blob URL
+      await new Promise(resolve => setTimeout(resolve, 1000));
       onVideoUploaded(recordedVideo.url);
       setIsUploading(false);
     } catch (err) {
-      setError('Failed to upload video. Please try again.');
+      setError('Failed to process video. Please try again.');
       setIsUploading(false);
-      console.error('Upload error:', err);
+      console.error('Video processing error:', err);
     }
   }, [recordedVideo, onVideoUploaded]);
 

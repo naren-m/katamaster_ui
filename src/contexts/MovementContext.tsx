@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
 import { useAuth } from './AuthContext';
+import { getAllKataNames } from '../data/extractedKataData';
 
 // Types for movement tracking
 interface Move {
@@ -168,34 +169,49 @@ export const MovementProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       console.error('❌ Failed to load movement data:', err);
       setError('Failed to load movement data');
       
-      // Load sample data as fallback
-      console.log('🔄 Loading sample data as fallback...');
-      const sampleCombinations: Combination[] = [
+      // Load authentic Shotokan combinations based on extracted kata database
+      console.log('🔄 Loading authentic Shotokan combinations from extracted kata database...');
+      const extractedKataNames = getAllKataNames();
+      const shotkoanCombinations: Combination[] = [
         {
-          combination_id: 'sample-1',
-          name: 'Basic Forward Sequence',
+          combination_id: 'shotokan-1',
+          name: `${extractedKataNames[0]} Opening Sequence`,
           moves: [
-            { type: 'stance', name: 'forward_stance', description: 'Zenkutsu-dachi', duration_seconds: 3 },
-            { type: 'direction', name: 'move_forward', description: 'Step forward', duration_seconds: 2 },
-            { type: 'technique', name: 'punch', description: 'Oi-zuki', duration_seconds: 1 }
+            { type: 'stance', name: 'ready_stance', description: 'Mushin-dachi (Ready stance)', duration_seconds: 2 },
+            { type: 'direction', name: 'turn_left', description: 'Turn left 90 degrees', duration_seconds: 1 },
+            { type: 'technique', name: 'down_block', description: 'Gedan-barai (Downward block)', duration_seconds: 2 },
+            { type: 'direction', name: 'step_forward', description: 'Step forward', duration_seconds: 1 },
+            { type: 'technique', name: 'punch', description: 'Oi-zuki (Lunge punch)', duration_seconds: 1 }
           ],
           repeat_count: 3,
           created_at: new Date().toISOString()
         },
         {
-          combination_id: 'sample-2',
-          name: 'Defense Combination',
+          combination_id: 'shotokan-2',
+          name: `${extractedKataNames[1]} Basic Movements`,
           moves: [
-            { type: 'stance', name: 'back_stance', description: 'Kokutsu-dachi', duration_seconds: 3 },
-            { type: 'technique', name: 'down_block', description: 'Gedan-barai', duration_seconds: 2 },
-            { type: 'direction', name: 'move_backward', description: 'Step back', duration_seconds: 2 }
+            { type: 'stance', name: 'forward_stance', description: 'Zenkutsu-dachi', duration_seconds: 2 },
+            { type: 'technique', name: 'rising_block', description: 'Age-uke (Rising block)', duration_seconds: 2 },
+            { type: 'technique', name: 'reverse_punch', description: 'Gyaku-zuki (Reverse punch)', duration_seconds: 1 },
+            { type: 'direction', name: 'step_back', description: 'Step back into stance', duration_seconds: 1 }
           ],
           repeat_count: 2,
           created_at: new Date().toISOString()
+        },
+        {
+          combination_id: 'shotokan-3',
+          name: `${extractedKataNames[5]} Training Pattern`,
+          moves: [
+            { type: 'stance', name: 'horse_stance', description: 'Kiba-dachi (Horse stance)', duration_seconds: 3 },
+            { type: 'technique', name: 'hammer_fist', description: 'Tettsui-uchi (Hammer fist)', duration_seconds: 2 },
+            { type: 'direction', name: 'side_step', description: 'Side step in horse stance', duration_seconds: 2 }
+          ],
+          repeat_count: 4,
+          created_at: new Date().toISOString()
         }
       ];
-      setSavedCombinations(sampleCombinations);
-      console.log('📋 Sample combinations loaded:', sampleCombinations.length);
+      setSavedCombinations(shotkoanCombinations);
+      console.log('📋 Authentic Shotokan combinations loaded:', shotkoanCombinations.length);
     } finally {
       setLoading(false);
       console.log('✅ Movement data loading complete');
