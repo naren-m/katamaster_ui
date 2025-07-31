@@ -154,6 +154,6 @@ test.describe('Working Dashboard Test', () => {
     console.log('Has loading:', hasLoading);
     
     // Basic assertion that we can reach the dashboard
-    expect(page.url()).toBe('http://localhost:5173/dashboard');
+    expect(page.url()).toBe('http://localhost:5174/dashboard');
   });
 });

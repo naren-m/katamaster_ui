@@ -4,6 +4,10 @@ export class ApiService {
     (() => {
       // If accessing via IP or hostname, use the same host for API
       const hostname = window.location.hostname;
+      // Development: Use Docker backend IP if running locally
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://192.168.68.138:8083';
+      }
       return `http://${hostname}:8083`;
     })();
 

@@ -1,0 +1,849 @@
+{
+  "config": {
+    "configFile": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/playwright.config.ts",
+    "rootDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.1",
+    "workers": 4,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:5174",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "working-dashboard.spec.ts",
+      "file": "working-dashboard.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Working Dashboard Test",
+          "file": "working-dashboard.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should verify dashboard functionality step by step",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4331,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✓ Sign-in page loaded correctly\n"
+                        },
+                        {
+                          "text": "✓ Sign-in completed\n"
+                        },
+                        {
+                          "text": "Current URL: http://localhost:5174/dashboard\n"
+                        },
+                        {
+                          "text": "Page title: Karate Kid Practice Tracker\n"
+                        },
+                        {
+                          "text": "Body text (first 200 chars): \n    Karate Kid PracticeWelcome, Test User!Karate Kid PracticeWelcome, Test User!DashboardYour karate training analytics and progressLast updated: 9:18:04 PM•Auto-refresh enabledAuto-refresh🔄RefreshO\n"
+                        },
+                        {
+                          "text": "Has Dashboard text: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has Analytics component: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has Stats elements: \u001b[33mtrue\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-31T04:18:01.103Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e581f3802f105cc1b769-c397523b1c3e21ec8461",
+              "file": "working-dashboard.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "should test dashboard analytics component directly",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 5782,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m\n    at /Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts:157:24",
+                        "location": {
+                          "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                          "column": 24,
+                          "line": 157
+                        },
+                        "snippet": "  155 |     \n  156 |     // Basic assertion that we can reach the dashboard\n> 157 |     expect(page.url()).toBe('http://localhost:5173/dashboard');\n      |                        ^\n  158 |   });\n  159 | });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                            "column": 24,
+                            "line": 157
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m\n\n  155 |     \n  156 |     // Basic assertion that we can reach the dashboard\n> 157 |     expect(page.url()).toBe('http://localhost:5173/dashboard');\n      |                        ^\n  158 |   });\n  159 | });\n    at /Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts:157:24"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "Has error: \u001b[33mfalse\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has loading: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-31T04:18:01.074Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                        "column": 24,
+                        "line": 157
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "e581f3802f105cc1b769-723c090df03b17f432f6",
+              "file": "working-dashboard.spec.ts",
+              "line": 85,
+              "column": 3
+            },
+            {
+              "title": "should verify dashboard functionality step by step",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 9770,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✓ Sign-in page loaded correctly\n"
+                        },
+                        {
+                          "text": "✓ Sign-in completed\n"
+                        },
+                        {
+                          "text": "Current URL: http://localhost:5174/dashboard\n"
+                        },
+                        {
+                          "text": "Page title: Karate Kid Practice Tracker\n"
+                        },
+                        {
+                          "text": "Body text (first 200 chars): \n    Karate Kid PracticeWelcome, Test User!Karate Kid PracticeWelcome, Test User!⚠️Dashboard UnavailableUnable to connect to the backend service. The dashboard data cannot be loaded at this time.🔄 Re\n"
+                        },
+                        {
+                          "text": "Has Dashboard text: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has Analytics component: \u001b[33mfalse\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has Stats elements: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-31T04:18:01.083Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e581f3802f105cc1b769-bcbb94da410140c7fcd6",
+              "file": "working-dashboard.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "should test dashboard analytics component directly",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 8200,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m\n    at /Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts:157:24",
+                        "location": {
+                          "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                          "column": 24,
+                          "line": 157
+                        },
+                        "snippet": "  155 |     \n  156 |     // Basic assertion that we can reach the dashboard\n> 157 |     expect(page.url()).toBe('http://localhost:5173/dashboard');\n      |                        ^\n  158 |   });\n  159 | });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                            "column": 24,
+                            "line": 157
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m\n\n  155 |     \n  156 |     // Basic assertion that we can reach the dashboard\n> 157 |     expect(page.url()).toBe('http://localhost:5173/dashboard');\n      |                        ^\n  158 |   });\n  159 | });\n    at /Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts:157:24"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "Has error: \u001b[33mfalse\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has loading: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-31T04:18:01.085Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                        "column": 24,
+                        "line": 157
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "e581f3802f105cc1b769-30b0f88c5ccc1489d991",
+              "file": "working-dashboard.spec.ts",
+              "line": 85,
+              "column": 3
+            },
+            {
+              "title": "should verify dashboard functionality step by step",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4965,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✓ Sign-in page loaded correctly\n"
+                        },
+                        {
+                          "text": "✓ Sign-in completed\n"
+                        },
+                        {
+                          "text": "Current URL: http://localhost:5174/dashboard\n"
+                        },
+                        {
+                          "text": "Page title: Karate Kid Practice Tracker\n"
+                        },
+                        {
+                          "text": "Body text (first 200 chars): \n    Karate Kid PracticeWelcome, Test User!Karate Kid PracticeWelcome, Test User!⚠️Dashboard UnavailableUnable to connect to the backend service. The dashboard data cannot be loaded at this time.🔄 Re\n"
+                        },
+                        {
+                          "text": "Has Dashboard text: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has Analytics component: \u001b[33mfalse\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has Stats elements: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-31T04:18:06.093Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e581f3802f105cc1b769-5c145b942644062298e9",
+              "file": "working-dashboard.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "should test dashboard analytics component directly",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 5645,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m\n    at /Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts:157:24",
+                        "location": {
+                          "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                          "column": 24,
+                          "line": 157
+                        },
+                        "snippet": "  155 |     \n  156 |     // Basic assertion that we can reach the dashboard\n> 157 |     expect(page.url()).toBe('http://localhost:5173/dashboard');\n      |                        ^\n  158 |   });\n  159 | });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                            "column": 24,
+                            "line": 157
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m\n\n  155 |     \n  156 |     // Basic assertion that we can reach the dashboard\n> 157 |     expect(page.url()).toBe('http://localhost:5173/dashboard');\n      |                        ^\n  158 |   });\n  159 | });\n    at /Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts:157:24"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "Has error: \u001b[33mfalse\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has loading: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-31T04:18:08.085Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-webkit/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                        "column": 24,
+                        "line": 157
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "e581f3802f105cc1b769-d40b958d68475b39bed4",
+              "file": "working-dashboard.spec.ts",
+              "line": 85,
+              "column": 3
+            },
+            {
+              "title": "should verify dashboard functionality step by step",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3806,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✓ Sign-in page loaded correctly\n"
+                        },
+                        {
+                          "text": "✓ Sign-in completed\n"
+                        },
+                        {
+                          "text": "Current URL: http://localhost:5174/dashboard\n"
+                        },
+                        {
+                          "text": "Page title: Karate Kid Practice Tracker\n"
+                        },
+                        {
+                          "text": "Body text (first 200 chars): \n    Karate Kid PracticeWelcome, Test User!Karate Kid PracticeWelcome, Test User!DashboardYour karate training analytics and progressLast updated: 9:18:14 PM•Auto-refresh enabledAuto-refresh🔄RefreshO\n"
+                        },
+                        {
+                          "text": "Has Dashboard text: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has Analytics component: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has Stats elements: \u001b[33mtrue\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-31T04:18:11.678Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e581f3802f105cc1b769-b2ba65ba3f8ff5a32a65",
+              "file": "working-dashboard.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "should test dashboard analytics component directly",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 4778,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m\n    at /Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts:157:24",
+                        "location": {
+                          "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                          "column": 24,
+                          "line": 157
+                        },
+                        "snippet": "  155 |     \n  156 |     // Basic assertion that we can reach the dashboard\n> 157 |     expect(page.url()).toBe('http://localhost:5173/dashboard');\n      |                        ^\n  158 |   });\n  159 | });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                            "column": 24,
+                            "line": 157
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m\n\n  155 |     \n  156 |     // Basic assertion that we can reach the dashboard\n> 157 |     expect(page.url()).toBe('http://localhost:5173/dashboard');\n      |                        ^\n  158 |   });\n  159 | });\n    at /Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts:157:24"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "Has error: \u001b[33mfalse\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has loading: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-31T04:18:12.449Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-Mobile-Chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-Mobile-Chrome/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-Mobile-Chrome/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                        "column": 24,
+                        "line": 157
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "e581f3802f105cc1b769-c1bf80e0d59913b2180d",
+              "file": "working-dashboard.spec.ts",
+              "line": 85,
+              "column": 3
+            },
+            {
+              "title": "should verify dashboard functionality step by step",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 3947,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✓ Sign-in page loaded correctly\n"
+                        },
+                        {
+                          "text": "✓ Sign-in completed\n"
+                        },
+                        {
+                          "text": "Current URL: http://localhost:5174/dashboard\n"
+                        },
+                        {
+                          "text": "Page title: Karate Kid Practice Tracker\n"
+                        },
+                        {
+                          "text": "Body text (first 200 chars): \n    Karate Kid PracticeWelcome, Test User!Karate Kid PracticeWelcome, Test User!⚠️Dashboard UnavailableUnable to connect to the backend service. The dashboard data cannot be loaded at this time.🔄 Re\n"
+                        },
+                        {
+                          "text": "Has Dashboard text: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has Analytics component: \u001b[33mfalse\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has Stats elements: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-31T04:18:14.249Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e581f3802f105cc1b769-7f77e780342b8bedfe6e",
+              "file": "working-dashboard.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "should test dashboard analytics component directly",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 4716,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m\n    at /Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts:157:24",
+                        "location": {
+                          "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                          "column": 24,
+                          "line": 157
+                        },
+                        "snippet": "  155 |     \n  156 |     // Basic assertion that we can reach the dashboard\n> 157 |     expect(page.url()).toBe('http://localhost:5173/dashboard');\n      |                        ^\n  158 |   });\n  159 | });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                            "column": 24,
+                            "line": 157
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://localhost:517\u001b[7m3\u001b[27m/dashboard\"\u001b[39m\nReceived: \u001b[31m\"http://localhost:517\u001b[7m4\u001b[27m/dashboard\"\u001b[39m\n\n  155 |     \n  156 |     // Basic assertion that we can reach the dashboard\n> 157 |     expect(page.url()).toBe('http://localhost:5173/dashboard');\n      |                        ^\n  158 |   });\n  159 | });\n    at /Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts:157:24"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "Has error: \u001b[33mfalse\u001b[39m\n"
+                        },
+                        {
+                          "text": "Has loading: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-31T04:18:14.478Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-Mobile-Safari/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-Mobile-Safari/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/test-results/working-dashboard-Working--ae4bb-nalytics-component-directly-Mobile-Safari/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/narenmudivarthy/Projects/KataMaster/katamaster_ui/tests/working-dashboard.spec.ts",
+                        "column": 24,
+                        "line": 157
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "e581f3802f105cc1b769-d7e06d566e4114a08b50",
+              "file": "working-dashboard.spec.ts",
+              "line": 85,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-07-31T04:17:59.301Z",
+    "duration": 20065.914999999997,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 5,
+    "flaky": 0
+  }
+}

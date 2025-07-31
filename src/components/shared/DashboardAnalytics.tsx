@@ -48,6 +48,13 @@ export const DashboardAnalytics: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'progress' | 'activity'>('overview');
   const [refreshing, setRefreshing] = useState(false);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
+
+  // Polling interval configuration
+  const POLLING_INTERVAL = 30000; // 30 seconds
+  const MIN_POLLING_INTERVAL = 10000; // 10 seconds minimum to avoid rate limiting
+  const MAX_POLLING_INTERVAL = 300000; // 5 minutes maximum
 
   useEffect(() => {
     if (user?.id) {
@@ -55,11 +62,29 @@ export const DashboardAnalytics: React.FC = () => {
     }
   }, [user?.id]);
 
-  const fetchAnalytics = async () => {
+  // Set up automatic polling for real-time updates
+  useEffect(() => {
+    if (!user?.id || !autoRefreshEnabled) return;
+
+    const intervalId = setInterval(() => {
+      fetchAnalytics(true); // true indicates it's an auto-refresh
+    }, POLLING_INTERVAL);
+
+    // Cleanup interval on unmount or when dependencies change
+    return () => clearInterval(intervalId);
+  }, [user?.id, autoRefreshEnabled]);
+
+  const fetchAnalytics = async (isAutoRefresh = false) => {
     if (!user?.id) return;
     
     try {
-      setLoading(true);
+      // Don't show loading spinner for auto-refresh to avoid UI flickering
+      if (!isAutoRefresh) {
+        setLoading(true);
+      } else {
+        setRefreshing(true);
+      }
+      
       const [analyticsData, recentActivityData] = await Promise.all([
         apiService.getDashboardAnalytics(user.id),
         apiService.getRecentActivity(user.id, 15)
@@ -72,18 +97,24 @@ export const DashboardAnalytics: React.FC = () => {
           recentActivity: recentActivityData?.activities || [],
           progressTrend: analyticsData.progressTrend || []
         });
+        
+        // Update last refreshed timestamp
+        setLastRefreshed(new Date());
       }
     } catch (error) {
       console.error('Failed to fetch dashboard analytics:', error);
-      // Use default stats when API fails
-      setAnalytics({
-        stats: getDefaultStats(),
-        topKatas: [],
-        recentActivity: [],
-        progressTrend: []
-      });
+      // Only show error state on initial load, not on auto-refresh
+      if (!isAutoRefresh) {
+        setAnalytics({
+          stats: getDefaultStats(),
+          topKatas: [],
+          recentActivity: [],
+          progressTrend: []
+        });
+      }
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -105,6 +136,7 @@ export const DashboardAnalytics: React.FC = () => {
     favoriteKata: '',
     lastPracticeDate: ''
   });
+
 
 
   const getStatIcon = (statType: string) => {
@@ -147,6 +179,38 @@ export const DashboardAnalytics: React.FC = () => {
     return formatDate(dateString);
   };
 
+  // Animated stat component for smooth number transitions
+  const AnimatedStat: React.FC<{
+    label: string;
+    value: number | string;
+    icon: string;
+    color?: string;
+    format?: (val: number) => string;
+    testId: string;
+  }> = ({ label, value, icon, color = 'text-gray-900', format, testId }) => {
+    const displayValue = format && typeof value === 'number' ? format(value) : value;
+    
+    return (
+      <div className="bg-white p-4 rounded-lg border shadow-sm" data-testid={testId}>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-600">{label}</p>
+            <motion.p 
+              key={value}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className={`text-2xl font-bold ${color}`}
+            >
+              {displayValue}
+            </motion.p>
+          </div>
+          <span className="text-2xl">{icon}</span>
+        </div>
+      </div>
+    );
+  };
+
   if (!user) {
     return (
       <div className="text-center p-8 text-gray-500">
@@ -167,13 +231,22 @@ export const DashboardAnalytics: React.FC = () => {
   if (!analytics) {
     return (
       <div className="text-center p-8 text-gray-500">
-        <p>Unable to load analytics data</p>
-        <button 
-          onClick={fetchAnalytics}
-          className="mt-2 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-        >
-          Retry
-        </button>
+        <div className="max-w-md mx-auto">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Dashboard Unavailable</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Unable to connect to the backend service. The dashboard data cannot be loaded at this time.
+          </p>
+          <button 
+            onClick={fetchAnalytics}
+            className="mt-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2 mx-auto"
+          >
+            🔄 Retry Connection
+          </button>
+          <p className="text-xs text-gray-500 mt-3">
+            If this issue persists, please check that the backend service is running.
+          </p>
+        </div>
       </div>
     );
   }
@@ -185,16 +258,46 @@ export const DashboardAnalytics: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600">Your karate training analytics and progress</p>
+          {lastRefreshed && (
+            <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+              Last updated: {lastRefreshed.toLocaleTimeString()}
+              {autoRefreshEnabled && (
+                <>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    Auto-refresh enabled
+                    {refreshing && (
+                      <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    )}
+                  </span>
+                </>
+              )}
+            </p>
+          )}
         </div>
-        <button
-          onClick={handleRefresh}
-          disabled={refreshing}
-          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 flex items-center gap-2"
-          data-testid="refresh-button"
-        >
-          <span className={refreshing ? 'animate-spin' : ''}>🔄</span>
-          Refresh
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Auto-refresh toggle */}
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={autoRefreshEnabled}
+              onChange={(e) => setAutoRefreshEnabled(e.target.checked)}
+              className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+            />
+            <span className="text-sm text-gray-700">Auto-refresh</span>
+          </label>
+          
+          {/* Manual refresh button */}
+          <button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 flex items-center gap-2"
+            data-testid="refresh-button"
+          >
+            <span className={refreshing ? 'animate-spin' : ''}>🔄</span>
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Tab Navigation */}
@@ -226,101 +329,70 @@ export const DashboardAnalytics: React.FC = () => {
           >
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white p-4 rounded-lg border shadow-sm" data-testid="stat-katas">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Katas Practiced</p>
-                    <p className="text-2xl font-bold text-gray-900">{analytics.stats.totalKatasPracticed}</p>
-                  </div>
-                  <span className="text-2xl">{getStatIcon('katas')}</span>
-                </div>
-              </div>
+              <AnimatedStat
+                label="Katas Practiced"
+                value={analytics.stats.totalKatasPracticed}
+                icon={getStatIcon('katas')}
+                testId="stat-katas"
+              />
 
-              <div className="bg-white p-4 rounded-lg border shadow-sm" data-testid="stat-sessions"> 
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Total Sessions</p>
-                    <p className="text-2xl font-bold text-gray-900">{analytics.stats.totalSessions}</p>
-                  </div>
-                  <span className="text-2xl">{getStatIcon('sessions')}</span>
-                </div>
-              </div>
+              <AnimatedStat
+                label="Total Sessions"
+                value={analytics.stats.totalSessions}
+                icon={getStatIcon('sessions')}
+                testId="stat-sessions"
+              />
 
-              <div className="bg-white p-4 rounded-lg border shadow-sm" data-testid="stat-repetitions">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Repetitions</p>
-                    <p className="text-2xl font-bold text-gray-900">{formatNumber(analytics.stats.totalRepetitions)}</p>
-                  </div>
-                  <span className="text-2xl">{getStatIcon('repetitions')}</span>
-                </div>
-              </div>
+              <AnimatedStat
+                label="Repetitions"
+                value={analytics.stats.totalRepetitions}
+                icon={getStatIcon('repetitions')}
+                format={formatNumber}
+                testId="stat-repetitions"
+              />
 
-              <div className="bg-white p-4 rounded-lg border shadow-sm" data-testid="stat-points">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Total Points</p>
-                    <p className="text-2xl font-bold text-purple-600">{formatNumber(analytics.stats.totalPoints)}</p>
-                  </div>
-                  <span className="text-2xl">{getStatIcon('points')}</span>
-                </div>
-              </div>
+              <AnimatedStat
+                label="Total Points"
+                value={analytics.stats.totalPoints}
+                icon={getStatIcon('points')}
+                color="text-purple-600"
+                format={formatNumber}
+                testId="stat-points"
+              />
 
-              <div className="bg-white p-4 rounded-lg border shadow-sm" data-testid="stat-streak">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Current Streak</p>
-                    <p className="text-2xl font-bold text-orange-600">{analytics.stats.currentStreak} days</p>
-                  </div>
-                  <span className="text-2xl">{getStatIcon('streak')}</span>
-                </div>
-              </div>
+              <AnimatedStat
+                label="Current Streak"
+                value={`${analytics.stats.currentStreak} days`}
+                icon={getStatIcon('streak')}
+                color="text-orange-600"
+                testId="stat-streak"
+              />
 
-              <div className="bg-white p-4 rounded-lg border shadow-sm" data-testid="stat-mastered">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Mastered</p>
-                    <p className="text-2xl font-bold text-green-600">{analytics.stats.masteredKatas}</p>
-                  </div>
-                  <span className="text-2xl">{getStatIcon('mastered')}</span>
-                </div>
-              </div>
+              <AnimatedStat
+                label="Mastered"
+                value={analytics.stats.masteredKatas}
+                icon={getStatIcon('mastered')}
+                color="text-green-600"
+                testId="stat-mastered"
+              />
 
-              <div className="bg-white p-4 rounded-lg border shadow-sm" data-testid="stat-rating">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Avg Rating</p>
-                    <p className="text-2xl font-bold text-yellow-600">{(analytics.stats.averageRating || 0).toFixed(1)}</p>
-                  </div>
-                  <span className="text-2xl">{getStatIcon('rating')}</span>
-                </div>
-              </div>
+              <AnimatedStat
+                label="Avg Rating"
+                value={(analytics.stats.averageRating || 0).toFixed(1)}
+                icon={getStatIcon('rating')}
+                color="text-yellow-600"
+                testId="stat-rating"
+              />
 
-              <div className="bg-white p-4 rounded-lg border shadow-sm" data-testid="stat-minutes">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Practice Time</p>
-                    <p className="text-2xl font-bold text-blue-600">{Math.round(analytics.stats.totalPracticeMinutes / 60)}h</p>
-                  </div>
-                  <span className="text-2xl">{getStatIcon('minutes')}</span>
-                </div>
-              </div>
+              <AnimatedStat
+                label="Practice Time"
+                value={`${Math.round(analytics.stats.totalPracticeMinutes / 60)}h`}
+                icon={getStatIcon('minutes')}
+                color="text-blue-600"
+                testId="stat-minutes"
+              />
             </div>
 
-            {/* Quick Insights */}
-            <div className="bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg p-6 text-white">
-              <h3 className="text-lg font-semibold mb-2">Quick Insights</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-purple-100">Favorite Kata</p>
-                  <p className="text-xl font-bold">{analytics.stats.favoriteKata || 'Not determined yet'}</p>
-                </div>
-                <div>
-                  <p className="text-purple-100">Last Practice</p>
-                  <p className="text-xl font-bold">{formatDate(analytics.stats.lastPracticeDate)}</p>
-                </div>
-              </div>
-            </div>
           </motion.div>
         )}
 
