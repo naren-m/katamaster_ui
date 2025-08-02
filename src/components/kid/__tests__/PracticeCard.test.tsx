@@ -48,8 +48,10 @@ vi.mock('../MovementCombinations', () => ({
 // Mock framer-motion
 vi.mock('framer-motion', () => ({
   motion: {
-    button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    button: ({ children, whileHover, whileTap, initial, animate, transition, ...props }: any) => 
+      <button {...props}>{children}</button>,
+    div: ({ children, whileHover, whileTap, initial, animate, transition, ...props }: any) => 
+      <div {...props}>{children}</div>,
   },
 }));
 
