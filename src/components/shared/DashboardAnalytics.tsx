@@ -77,6 +77,8 @@ export const DashboardAnalytics: React.FC = () => {
   const fetchAnalytics = async (isAutoRefresh = false) => {
     if (!user?.id) return;
     
+    console.log('🎯 DashboardAnalytics - fetchAnalytics called with userId:', user.id);
+    
     try {
       // Don't show loading spinner for auto-refresh to avoid UI flickering
       if (!isAutoRefresh) {
@@ -85,22 +87,166 @@ export const DashboardAnalytics: React.FC = () => {
         setRefreshing(true);
       }
       
-      const [analyticsData, recentActivityData] = await Promise.all([
-        apiService.getDashboardAnalytics(user.id),
-        apiService.getRecentActivity(user.id, 15)
+      // Try to get data from both the analytics endpoint (if it exists) and practice history
+      const [analyticsData, recentActivityData, practiceHistoryData] = await Promise.all([
+        apiService.getDashboardAnalytics(user.id).catch(() => null),
+        apiService.getRecentActivity(user.id, 15).catch(() => null),
+        apiService.getPracticeHistory(user.id, 1, 100) // Get more sessions for better aggregation
       ]);
+      
+      console.log('📊 API Responses:', {
+        analyticsData,
+        recentActivityData,
+        practiceHistoryData
+      });
+      console.log('📊 Analytics data stats:', analyticsData?.stats);
+      console.log('📊 Recent activity data:', recentActivityData?.activities);
 
-      if (analyticsData) {
-        setAnalytics({
-          stats: analyticsData.stats || getDefaultStats(),
-          topKatas: analyticsData.topKatas || [],
-          recentActivity: recentActivityData?.activities || [],
-          progressTrend: analyticsData.progressTrend || []
+      // If we have practice history, aggregate the data
+      let enhancedStats = getDefaultStats();
+      let recentActivity: any[] = [];
+      let topKatas: any[] = [];
+
+      if (practiceHistoryData?.practice_history?.length > 0) {
+        const sessions = practiceHistoryData.practice_history;
+        console.log('📈 Processing practice history:', sessions.length, 'sessions');
+        
+        // Calculate comprehensive stats from practice history
+        const allKatas = new Set<string>();
+        let totalRepetitions = 0;
+        
+        sessions.forEach((session: any, index: number) => {
+          if (index < 5) {
+            console.log(`📝 Session ${index}:`, session);
+            console.log(`📝 Session ${index} katas:`, session.katas);
+            console.log(`📝 Session ${index} techniques:`, session.techniques);
+            if (session.techniques && session.techniques.length > 0) {
+              console.log(`📝 Session ${index} first technique:`, session.techniques[0]);
+            }
+            console.log(`📝 Session ${index} all keys:`, Object.keys(session));
+          }
+          
+          // Extract kata data from katas array first (most reliable source)
+          if (session.katas && Array.isArray(session.katas)) {
+            session.katas.forEach((kata: any) => {
+              if (kata.name) {
+                allKatas.add(kata.name);
+                totalRepetitions += kata.repetitions || 0;
+                if (index < 5) {
+                  console.log(`✅ Found kata from katas array: ${kata.name}, reps: ${kata.repetitions || 0}`);
+                }
+              }
+            });
+          }
+          
+          // Extract kata data from techniques array (where some katas might be stored as techniques)
+          if (session.techniques && Array.isArray(session.techniques)) {
+            session.techniques.forEach((technique: any) => {
+              // Look for techniques that are actually katas (contain kata names)
+              const techId = technique.technique_id || technique.name;
+              if (index < 5) {
+                console.log(`🔍 Checking technique: ${techId}, isKata: ${isKataName(techId || '')}`);
+              }
+              if (techId && isKataName(techId)) {
+                allKatas.add(techId);
+                totalRepetitions += technique.count || technique.repetitions || 0;
+                if (index < 5) {
+                  console.log(`✅ Found kata from techniques: ${techId}, reps: ${technique.count || technique.repetitions || 0}`);
+                }
+              }
+            });
+          }
         });
         
-        // Update last refreshed timestamp
-        setLastRefreshed(new Date());
+        enhancedStats = {
+          totalKatasPracticed: allKatas.size,
+          totalSessions: sessions.length,
+          totalRepetitions: totalRepetitions,
+          totalPracticeMinutes: sessions.reduce((total: number, session: any) => total + (session.duration_minutes || 0), 0),
+          averageRating: 7.5, // Default rating since we don't have individual ratings
+          currentStreak: calculateStreak(sessions),
+          totalPoints: sessions.reduce((total: number, session: any) => total + (session.points_earned || 0), 0),
+          masteredKatas: countMasteredKatas(sessions),
+          favoriteKata: findMostPracticedKata(sessions),
+          lastPracticeDate: sessions.length > 0 ? sessions[0].date || sessions[0].session_date : ''
+        };
+        
+        console.log('📊 Calculated enhanced stats:', enhancedStats);
+        console.log('🔍 All unique katas found:', Array.from(allKatas));
+        console.log('📈 Total repetitions calculated:', totalRepetitions);
+
+        // Build recent activity from practice sessions
+        recentActivity = sessions.slice(0, 15).map((session: any, index: number) => {
+          // Extract kata names from techniques (where katas are actually stored)
+          const kataNames: string[] = [];
+          let totalReps = 0;
+          
+          if (session.techniques && Array.isArray(session.techniques)) {
+            session.techniques.forEach((technique: any) => {
+              const techId = technique.technique_id || technique.name;
+              if (techId && isKataName(techId)) {
+                kataNames.push(techId);
+                totalReps += technique.count || technique.repetitions || 0;
+              }
+            });
+          }
+          
+          // Also check legacy katas array for backwards compatibility
+          if (session.katas && Array.isArray(session.katas)) {
+            session.katas.forEach((k: any) => {
+              if (k.name) {
+                kataNames.push(k.name);
+                totalReps += k.repetitions || 0;
+              }
+            });
+          }
+          
+          const activityName = kataNames.length > 0 
+            ? `${kataNames.join(', ')} Practice`
+            : 'Practice Session';
+          
+          const description = kataNames.length > 0
+            ? `Practiced ${kataNames.join(', ')} for ${session.duration_minutes || 0} minutes (${totalReps} reps)`
+            : `Practice session for ${session.duration_minutes || 0} minutes`;
+          
+          return {
+            id: `practice-${index}`,
+            type: 'kata_practice',
+            activityName,
+            description,
+            timestamp: session.date || session.session_date || new Date().toISOString(),
+            pointsEarned: session.points_earned || Math.floor((session.duration_minutes || 0) * 2),
+            icon: '🥋'
+          };
+        });
+
+        // Build top katas from practice history
+        topKatas = buildTopKatasFromHistory(sessions);
       }
+
+      // Use analytics data if available and has meaningful data, otherwise use aggregated data
+      const hasValidAnalyticsData = analyticsData?.stats && 
+        (analyticsData.stats.totalSessions > 0 || analyticsData.stats.totalKatasPracticed > 0);
+      
+      console.log('🔍 Analytics data validation:');
+      console.log('  analyticsData?.stats:', analyticsData?.stats);
+      console.log('  hasValidAnalyticsData:', hasValidAnalyticsData);
+      console.log('  enhancedStats:', enhancedStats);
+      
+      const finalAnalytics = {
+        stats: hasValidAnalyticsData ? analyticsData.stats : enhancedStats,
+        topKatas: analyticsData?.topKatas?.length > 0 ? analyticsData.topKatas : topKatas,
+        recentActivity: recentActivityData?.activities?.length > 0 ? recentActivityData.activities : recentActivity,
+        progressTrend: analyticsData?.progressTrend?.length > 0 ? analyticsData.progressTrend : buildProgressTrendFromHistory(practiceHistoryData?.practice_history || [])
+      };
+      
+      console.log('✅ Setting final analytics:', finalAnalytics);
+      console.log('✅ Final analytics stats:', finalAnalytics.stats);
+      console.log('🎯 Stats being used:', hasValidAnalyticsData ? 'API analytics data' : 'Enhanced stats from practice history');
+      setAnalytics(finalAnalytics);
+      
+      // Update last refreshed timestamp
+      setLastRefreshed(new Date());
     } catch (error) {
       console.error('Failed to fetch dashboard analytics:', error);
       // Only show error state on initial load, not on auto-refresh
@@ -178,6 +324,279 @@ export const DashboardAnalytics: React.FC = () => {
     if (diffDays < 7) return `${diffDays}d ago`;
     return formatDate(dateString);
   };
+  // Helper function to identify kata names
+  const isKataName = (name: string): boolean => {
+    const kataNames = [
+      'Heian Shodan', 'Heian Nidan', 'Heian Sandan', 'Heian Yondan', 'Heian Godan',
+      'Tekki Shodan', 'Tekki Nidan', 'Tekki Sandan',
+      'Bassai Dai', 'Bassai Sho', 'Kanku Dai', 'Kanku Sho', 
+      'Jion', 'Jitte', 'Jiin', 'Enpi', 'Gankaku', 'Hangetsu', 'Chinte'
+    ];
+    return kataNames.some(kata => name.includes(kata)) || name.toLowerCase().includes('kata');
+  };
+
+  // Helper functions for aggregating data from practice history
+  const calculateStreak = (sessions: any[]): number => {
+    if (!sessions.length) return 0;
+    
+    // Get unique dates from sessions
+    const sessionDates = sessions
+      .map(s => s.date || s.session_date)
+      .filter(Boolean)
+      .map(dateStr => dateStr.split('T')[0]) // Get just the date part
+      .filter((date, index, arr) => arr.indexOf(date) === index) // Remove duplicates
+      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime()); // Sort desc
+    
+    if (!sessionDates.length) return 0;
+    
+    let streak = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Check if the most recent session was today or yesterday
+    const mostRecent = new Date(sessionDates[0]);
+    mostRecent.setHours(0, 0, 0, 0);
+    
+    const daysSinceLastSession = Math.floor((today.getTime() - mostRecent.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (daysSinceLastSession > 1) {
+      return 0; // Streak broken if more than 1 day gap
+    }
+    
+    // Count consecutive days
+    let expectedDate = new Date(sessionDates[0]);
+    expectedDate.setHours(0, 0, 0, 0);
+    
+    for (const dateStr of sessionDates) {
+      const sessionDate = new Date(dateStr);
+      sessionDate.setHours(0, 0, 0, 0);
+      
+      if (sessionDate.getTime() === expectedDate.getTime()) {
+        streak++;
+        expectedDate.setDate(expectedDate.getDate() - 1); // Move to previous day
+      } else {
+        break; // Streak broken
+      }
+    }
+    
+    return streak;
+  };
+
+  const countMasteredKatas = (sessions: any[]): number => {
+    const kataStats = new Map<string, { totalReps: number, avgRating: number, sessions: number }>();
+    
+    sessions.forEach(session => {
+      // Extract katas from techniques array (where katas are actually stored)
+      if (session.techniques && Array.isArray(session.techniques)) {
+        session.techniques.forEach((technique: any) => {
+          const techId = technique.technique_id || technique.name;
+          if (techId && isKataName(techId)) {
+            const kataName = techId;
+            const existing = kataStats.get(kataName) || { totalReps: 0, avgRating: 0, sessions: 0 };
+            existing.totalReps += technique.count || technique.repetitions || 0;
+            // Use session duration as a proxy for rating
+            const sessionRating = Math.min(10, Math.max(1, (session.duration_minutes || 0) / 10 + 5));
+            existing.avgRating = ((existing.avgRating * existing.sessions) + sessionRating) / (existing.sessions + 1);
+            existing.sessions++;
+            kataStats.set(kataName, existing);
+          }
+        });
+      }
+      
+      // Also check legacy katas array for backwards compatibility
+      if (session.katas && Array.isArray(session.katas)) {
+        session.katas.forEach((kata: any) => {
+          const kataName = kata.name;
+          if (!kataName) return;
+          
+          const existing = kataStats.get(kataName) || { totalReps: 0, avgRating: 0, sessions: 0 };
+          existing.totalReps += kata.repetitions || 0;
+          const sessionRating = Math.min(10, Math.max(1, (session.duration_minutes || 0) / 10 + 5));
+          existing.avgRating = ((existing.avgRating * existing.sessions) + sessionRating) / (existing.sessions + 1);
+          existing.sessions++;
+          kataStats.set(kataName, existing);
+        });
+      }
+    });
+    
+    // Consider a kata "mastered" if it has been practiced >5 times with decent session lengths
+    let masteredCount = 0;
+    kataStats.forEach((stats) => {
+      if (stats.totalReps >= 5 && stats.avgRating >= 6.0) {
+        masteredCount++;
+      }
+    });
+    
+    return masteredCount;
+  };
+
+  const findMostPracticedKata = (sessions: any[]): string => {
+    if (!sessions.length) return '';
+    
+    const kataCounts = new Map<string, number>();
+    sessions.forEach(session => {
+      // Extract katas from techniques array (where katas are actually stored)
+      if (session.techniques && Array.isArray(session.techniques)) {
+        session.techniques.forEach((technique: any) => {
+          const techId = technique.technique_id || technique.name;
+          if (techId && isKataName(techId)) {
+            const kataName = techId;
+            kataCounts.set(kataName, (kataCounts.get(kataName) || 0) + (technique.count || technique.repetitions || 1));
+          }
+        });
+      }
+      
+      // Also check legacy katas array for backwards compatibility
+      if (session.katas && Array.isArray(session.katas)) {
+        session.katas.forEach((kata: any) => {
+          const kataName = kata.name;
+          if (kataName) {
+            kataCounts.set(kataName, (kataCounts.get(kataName) || 0) + (kata.repetitions || 1));
+          }
+        });
+      }
+    });
+    
+    let mostPracticed = '';
+    let maxCount = 0;
+    kataCounts.forEach((count, kata) => {
+      if (count > maxCount) {
+        maxCount = count;
+        mostPracticed = kata;
+      }
+    });
+    
+    return mostPracticed;
+  };
+
+  const buildTopKatasFromHistory = (sessions: any[]): KataProgressSummary[] => {
+    const kataStats = new Map<string, {
+      name: string;
+      totalReps: number;
+      avgRating: number;
+      sessions: number;
+      lastPracticed: string;
+    }>();
+    
+    sessions.forEach(session => {
+      // Extract katas from techniques array (where katas are actually stored)
+      if (session.techniques && Array.isArray(session.techniques)) {
+        session.techniques.forEach((technique: any) => {
+          const techId = technique.technique_id || technique.name;
+          if (techId && isKataName(techId)) {
+            const kataName = techId;
+            const existing = kataStats.get(kataName) || {
+              name: kataName,
+              totalReps: 0,
+              avgRating: 0,
+              sessions: 0,
+              lastPracticed: session.date || session.session_date || ''
+            };
+            
+            existing.totalReps += technique.count || technique.repetitions || 0;
+            const sessionRating = Math.min(10, Math.max(1, (session.duration_minutes || 0) / 10 + 5));
+            existing.avgRating = ((existing.avgRating * existing.sessions) + sessionRating) / (existing.sessions + 1);
+            existing.sessions++;
+            
+            // Update last practiced if this session is more recent
+            const sessionDate = new Date(session.date || session.session_date || 0);
+            const lastDate = new Date(existing.lastPracticed || 0);
+            if (sessionDate > lastDate) {
+              existing.lastPracticed = session.date || session.session_date || '';
+            }
+            
+            kataStats.set(kataName, existing);
+          }
+        });
+      }
+      
+      // Also check legacy katas array for backwards compatibility
+      if (session.katas && Array.isArray(session.katas)) {
+        session.katas.forEach((kata: any) => {
+          const kataName = kata.name;
+          if (!kataName) return;
+          
+          const existing = kataStats.get(kataName) || {
+            name: kataName,
+            totalReps: 0,
+            avgRating: 0,
+            sessions: 0,
+            lastPracticed: session.date || session.session_date || ''
+          };
+          
+          existing.totalReps += kata.repetitions || 0;
+          const sessionRating = Math.min(10, Math.max(1, (session.duration_minutes || 0) / 10 + 5));
+          existing.avgRating = ((existing.avgRating * existing.sessions) + sessionRating) / (existing.sessions + 1);
+          existing.sessions++;
+          
+          // Update last practiced if this session is more recent
+          const sessionDate = new Date(session.date || session.session_date || 0);
+          const lastDate = new Date(existing.lastPracticed || 0);
+          if (sessionDate > lastDate) {
+            existing.lastPracticed = session.date || session.session_date || '';
+          }
+          
+          kataStats.set(kataName, existing);
+        });
+      }
+    });
+    
+    // Convert to KataProgressSummary format and sort by total repetitions
+    return Array.from(kataStats.values())
+      .map(stats => ({
+        kataId: stats.name.toLowerCase().replace(/\s+/g, '-'),
+        kataName: stats.name,
+        totalRepetitions: stats.totalReps,
+        masteryPercentage: Math.min(100, (stats.avgRating / 10) * 100),
+        mastered: stats.totalReps >= 5 && stats.avgRating >= 6.0,
+        lastPracticed: stats.lastPracticed
+      }))
+      .sort((a, b) => b.totalRepetitions - a.totalRepetitions)
+      .slice(0, 5); // Top 5 katas
+  };
+
+  const buildProgressTrendFromHistory = (sessions: any[]): Array<{ date: string; sessions: number; repetitions: number }> => {
+    if (!sessions.length) return [];
+    
+    const dailyStats = new Map<string, { sessions: number; repetitions: number }>();
+    
+    sessions.forEach(session => {
+      const dateStr = (session.date || session.session_date || '').split('T')[0]; // Get just the date part
+      if (!dateStr) return;
+      
+      const existing = dailyStats.get(dateStr) || { sessions: 0, repetitions: 0 };
+      existing.sessions++;
+      
+      // Count repetitions from techniques array (where katas are stored)
+      if (session.techniques && Array.isArray(session.techniques)) {
+        session.techniques.forEach((technique: any) => {
+          const techId = technique.technique_id || technique.name;
+          if (techId && isKataName(techId)) {
+            existing.repetitions += technique.count || technique.repetitions || 0;
+          }
+        });
+      }
+      
+      // Also count from legacy katas array for backwards compatibility
+      if (session.katas && Array.isArray(session.katas)) {
+        session.katas.forEach((kata: any) => {
+          existing.repetitions += kata.repetitions || 0;
+        });
+      }
+      
+      dailyStats.set(dateStr, existing);
+    });
+    
+    // Convert to array and sort by date
+    return Array.from(dailyStats.entries())
+      .map(([date, stats]) => ({
+        date,
+        sessions: stats.sessions,
+        repetitions: stats.repetitions
+      }))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .slice(-30); // Last 30 days
+  };
 
   // Animated stat component for smooth number transitions
   const AnimatedStat: React.FC<{
@@ -229,6 +648,7 @@ export const DashboardAnalytics: React.FC = () => {
   }
 
   if (!analytics) {
+    console.log('❌ Analytics is null/undefined, showing unavailable message');
     return (
       <div className="text-center p-8 text-gray-500">
         <div className="max-w-md mx-auto">
@@ -250,6 +670,9 @@ export const DashboardAnalytics: React.FC = () => {
       </div>
     );
   }
+
+  console.log('🎨 Rendering dashboard with analytics:', analytics);
+  console.log('🎨 Analytics stats for render:', analytics?.stats);
 
   return (
     <div className="space-y-6" data-testid="dashboard-analytics">

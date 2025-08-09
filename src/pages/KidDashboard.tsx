@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useUser } from '../contexts/UserContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useMovement } from '../contexts/MovementContext';
 import PracticeCard from '../components/kid/PracticeCard';
 import ProgressSection from '../components/kid/ProgressSection';
@@ -8,13 +9,15 @@ import QuickStats from '../components/kid/QuickStats';
 import { DashboardAnalytics } from '../components/shared/DashboardAnalytics';
 
 const KidDashboard = () => {
-  const { childName, user } = useUser();
+  const { childName } = useUser();
+  const { user } = useAuth();
   const { savedCombinations, loading, error } = useMovement();
   
   console.log('🏠 KidDashboard - User state:', { 
     childName, 
     userId: user?.id,
-    userObject: user 
+    userObject: user,
+    isAuthenticated: !!user
   });
   console.log('🏠 KidDashboard - MovementContext state:', { 
     combinations: savedCombinations.length, 

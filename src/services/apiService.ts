@@ -257,7 +257,10 @@ export class ApiService {
       if (date) params.append('date', date);
       url += `?${params.toString()}`;
 
-      const response = await fetch(url);
+      const response = await this.makeAuthenticatedRequest(url, {
+        method: 'GET',
+      });
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
